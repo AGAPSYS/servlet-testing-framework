@@ -1,0 +1,33 @@
+Agapsys Servlet Testing Framework
+============================
+
+Welcome to the Agapsys Servlet Testing Framework project.
+
+Compiling
+---------
+
+The first build may take a long time as Maven downloads all the
+dependencies.
+
+Dependencies
+------------
+
+Agapsys Servlet Testing Framework requires Java 7 compatible runtime and depends
+on the following external libraries:
+
+* Jetty Web Container
+* HttpComponents Client
+
+(for detailed information on external dependencies please see pom.xml)
+
+Licensing
+---------
+
+Agapsys Servlet Testing Framework is licensed under the Apache License 2.0.
+See the files called LICENSE and NOTICE for more information.
+
+Contact
+-------
+
+  o For general information visit the main project site at
+	https://github.com/AGAPSYS/servlet-testing-framework
