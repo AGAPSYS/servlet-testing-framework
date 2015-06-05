@@ -123,6 +123,19 @@ public class HttpResponse {
 		return httpHeaders;
 	}
 
+	/**
+	 * Returns the first header with given name
+	 * @param name header name
+	 * @throws IllegalArgumentException  if name == null or name.isEmpty()
+	 */
+	public HttpHeader getFirstHeader(String name) throws IllegalArgumentException {
+		if (name == null || name.isEmpty())
+			throw new IllegalArgumentException("Null/Empty name");
+		
+		Header header = coreResponse.getFirstHeader(name);
+		return new HttpHeader(header.getName(), header.getValue());
+	}
+	
 	/** Returns all the headers of this message. */
 	public Set<HttpHeader> getAllHeaders() {
 		Header[] headers = coreResponse.getAllHeaders();
