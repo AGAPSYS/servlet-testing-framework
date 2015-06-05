@@ -19,6 +19,7 @@ on the following external libraries:
 
 * Jetty Web Container
 * HttpComponents Client
+* JUnit (TESTING)
 
 (for detailed information on external dependencies please see pom.xml)
 
