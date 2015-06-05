@@ -168,6 +168,15 @@ public class ServletContainter {
 	}
 	
 	/**
+	 * Performs a GET request to this server.
+	 * This is a convenience method for doGet(client, new HttpGet(this, uri))
+	 * @see ServletContainter#doGet(HttpClient, HttpGet)
+	 */
+	public HttpResponse doGet(HttpClient client, String uri) throws IllegalArgumentException, RuntimeException {
+		return doGet(client, new HttpGet(this, uri));
+	}
+	
+	/**
 	 * Performs a GET request to this server
 	 * @param request {@linkplain HttpGet GET request} instance
 	 * @return server {@link HttpResponse response}
@@ -176,6 +185,15 @@ public class ServletContainter {
 	 */
 	public HttpResponse doGet(HttpGet request) throws IllegalArgumentException, RuntimeException {
 		return doRequest(request);
+	}
+	
+	/**
+	 * Performs a GET request to this server.
+	 * This is a convenience method for doGet(new HttpGet(this, uri))
+	 * @see ServletContainter#doGet(HttpGet)
+	 */
+	public HttpResponse doGet(String uri) throws IllegalArgumentException, RuntimeException {
+		return doGet(new HttpGet(this, uri));
 	}
 	
 	/**
