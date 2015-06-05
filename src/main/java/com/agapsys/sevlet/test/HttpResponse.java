@@ -27,7 +27,6 @@ import java.util.Set;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.ProtocolVersion;
-import org.apache.http.StatusLine;
 
 /** Represents a response to a {@linkplain HttpRequest} */
 public class HttpResponse {
@@ -74,8 +73,8 @@ public class HttpResponse {
 	}
 	
 	/** Returns response status line. */
-	public StatusLine getStatusLine() {
-		return coreResponse.getStatusLine();
+	public int getStatusCode() {
+		return coreResponse.getStatusLine().getStatusCode();
 	}
 
 	/** Returns the response body. */
