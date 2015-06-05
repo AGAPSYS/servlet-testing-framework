@@ -19,7 +19,7 @@ package com.agapsys.sevlet.test;
 import org.apache.http.client.methods.HttpRequestBase;
 
 /** Represents a HTTP 'PUT' request. */
-public class HttpPut extends HttpRequest {
+public class HttpPut extends HttpEntityRequest {
 	private HttpRequestBase coreRequest = null;
 
 	/** @see HttpRequest#HttpRequest(ServletContainter, String). */

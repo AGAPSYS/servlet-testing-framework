@@ -17,8 +17,11 @@
 package com.agapsys.sevlet.test;
 
 import com.agapsys.sevlet.test.http.util.NameValuePair;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -50,8 +53,47 @@ public abstract class HttpRequest {
 	
 	// INSTANCE SCOPE ==========================================================
 	private final ServletContainter servletContainter;
-	private final String uri;
+	private String uriBase;
 	private final Map<String, String> parameters = new LinkedHashMap<>();
+	
+	private void parseUri(String uri) throws IllegalArgumentException {
+		int paramDelimiterIndex = uri.indexOf("?");
+		
+		String baseUri;
+	
+		if (paramDelimiterIndex != -1) {
+			baseUri = uri.substring(0, paramDelimiterIndex);
+		} else {
+			baseUri = uri;
+		}
+		
+		if (paramDelimiterIndex != -1) {
+			String paramsStr = uri.substring(paramDelimiterIndex + 1);
+			String[] paramTokens = paramsStr.split("&");
+			
+			for (String paramToken : paramTokens) {
+				String[] paramTokenPair = paramToken.split("=");
+				
+				if (paramTokenPair.length != 2) {
+					if (paramTokenPair.length > 0)
+						throw new IllegalArgumentException("Malformed parameter: " + paramTokenPair[0]);
+					else
+						throw new IllegalArgumentException("Malformed uri: " + uri);
+				}
+				
+				try {
+					String name = URLDecoder.decode(paramTokenPair[0], "UTF-8");
+					String value = URLDecoder.decode(paramTokenPair[1], "UTF-8");
+					parameters.put(name, value);
+
+				} catch (UnsupportedEncodingException ex) {
+					throw new RuntimeException(ex);
+				}
+			}
+		}
+		
+		this.uriBase = baseUri;
+	}
 	
 	/** 
 	 * Constructor.
@@ -68,10 +110,10 @@ public abstract class HttpRequest {
 		if (uri == null || uri.isEmpty())
 			throw new IllegalArgumentException("Null/Empty uri");
 		
-		if (uri.contains(":"))
+		if (uri.contains(":") || uri.contains(" ") || !uri.startsWith("/"))
 			throw new IllegalArgumentException("Invalid uri: " + uri);
 		
-		this.uri = uri;
+		parseUri(uri);
 	}
 	
 	/** Returns wrapped {@linkplain HttpRequestBase}. */
@@ -80,15 +122,13 @@ public abstract class HttpRequest {
 	/** Performs required actions with wrapped {@linkplain HttpRequestBase}. */
 	void doPreSend() {
 		try {
-			BasicHttpParams params = new BasicHttpParams();
-			for (Map.Entry<String, String> entry : parameters.entrySet()) {
-				params.setParameter(entry.getKey(), entry.getValue());
-			}
-			
-			getCoreRequest().setParams(params);
-			getCoreRequest().setURI(new URI(String.format("http://localhost:%d%s", servletContainter.getLocalPort(), uri)));
+			setCoreParameters(getCoreRequest(), parameters);
+			getCoreRequest().setURI(new URI(String.format("http://localhost:%d%s", servletContainter.getLocalPort(), getUri())));
 		} catch (URISyntaxException ignore) {}
 	}
+	
+	/** Set request parameters into coreRequest object. Default implementation does nothing */
+	void setCoreParameters(HttpRequestBase coreRequest, Map<String, String> parameters) {}
 	
 	/** returns the name of the method. */
 	public String getMethod() {
@@ -100,9 +140,34 @@ public abstract class HttpRequest {
 		return servletContainter;
 	}
 
+	/** Returns the URI-base (URI without any parameter information). */
+	String getUriBase() {
+		return uriBase;
+	}
+	
 	/** Returns request URI. */
 	public String getUri() {
-		return uri;
+		StringBuilder sb = new StringBuilder(uriBase + "?");
+		try {
+			int i = 0;
+			for (Map.Entry<String, String> parameter : parameters.entrySet()) {
+				if (i > 0)
+					sb.append("&");
+				
+				sb.append(URLEncoder.encode(parameter.getKey(), "UTF-8"));
+				sb.append("=");
+				sb.append(URLEncoder.encode(parameter.getValue(), "UTF-8"));
+				i++;
+			}
+			return sb.toString();
+		} catch (UnsupportedEncodingException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
+	@Override
+	public String toString() {
+		return getUri();
 	}
 	
 	// Parameters --------------------------------------------------------------

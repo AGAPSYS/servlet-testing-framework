@@ -19,7 +19,7 @@ package com.agapsys.sevlet.test;
 import org.apache.http.client.methods.HttpRequestBase;
 
 /** Represents a HTTP 'POST' request. */
-public class HttpPost extends HttpRequest {
+public class HttpPost extends HttpEntityRequest {
 	private HttpRequestBase coreRequest = null;
 
 	/** @see HttpRequest#HttpRequest(ServletContainter, String). */
