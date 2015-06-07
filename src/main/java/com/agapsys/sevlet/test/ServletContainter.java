@@ -20,15 +20,54 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.http.client.methods.HttpRequestBase;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.util.log.Logger;
 
 /** Represents a servlet container */
 public class ServletContainter {
+	// CLASS SCOPE =============================================================
+	private static class NoLogger implements Logger {
+		// CLASS SCOPE =========================================================
+		private static NoLogger singletonInstance = null;
+		
+		public static NoLogger getSingletonInstance() {
+			if (singletonInstance == null)
+				singletonInstance = new NoLogger();
+			
+			return singletonInstance;
+		}
+		// =====================================================================
+		
+		// INSTANCE SCOPE ======================================================
+		private NoLogger() {}
+		
+		@Override public String getName() { return "no"; }
+		@Override public void warn(String msg, Object... args) { }
+		@Override public void warn(Throwable thrown) { }
+		@Override public void warn(String msg, Throwable thrown) { }
+		@Override public void info(String msg, Object... args) { }
+		@Override public void info(Throwable thrown) { }
+		@Override public void info(String msg, Throwable thrown) { }
+		@Override public boolean isDebugEnabled() { return false; }
+		@Override public void setDebugEnabled(boolean enabled) { }
+		@Override public void debug(String msg, Object... args) { }
+		@Override public void debug(Throwable thrown) { }
+		@Override public void debug(String msg, Throwable thrown) { }
+		@Override public Logger getLogger(String name) { return this; }
+		@Override public void ignore(Throwable ignored) { }
+		@Override public void debug(String arg0, long arg1) { }
+		// =====================================================================
+	}
+	
+	static {
+		org.eclipse.jetty.util.log.Log.setLog(NoLogger.getSingletonInstance());
+	}
+	// =========================================================================
+	
 	// INSTANCE SCOPE ==========================================================
 	private final Server server;
 	private final ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();
