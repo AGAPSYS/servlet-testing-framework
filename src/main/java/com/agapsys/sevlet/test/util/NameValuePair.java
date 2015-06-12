@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.agapsys.sevlet.test.http.util;
+package com.agapsys.sevlet.test.util;
 
 public class NameValuePair extends Pair<String, String> {
 
