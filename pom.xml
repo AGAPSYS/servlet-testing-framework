@@ -30,7 +30,7 @@ limitations under the License.
         <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
 	
-	<name>Agapsys Servlet Testing Framework</name>
+	<name>Servlet Testing Framework</name>
 	<description>A framework for servlet/filter testing</description>
 	<url>https://github.com/agapsys/servlet-testing-framework</url>
 	
