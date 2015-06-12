@@ -29,12 +29,12 @@ public class Pair<T1, T2> {
 		this.second = second;
 	}
 	
-	/** Returns the first object. */
+	/** @return the first object. */
 	protected T1 getFirst() {
 		return first;
 	}
 	
-	/** Returns the second object. */
+	/** @return the second object. */
 	protected T2 getSecond() {
 		return second;
 	}

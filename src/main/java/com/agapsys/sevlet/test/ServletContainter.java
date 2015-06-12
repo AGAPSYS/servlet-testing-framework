@@ -79,7 +79,7 @@ public class ServletContainter {
 	}
 	
 	/** 
-	 * Returns the local TCP port used by the server
+	 * @return the local TCP port used by the server
 	 * @throws IllegalStateException if server is not running
 	 */
 	public int getLocalPort() throws IllegalStateException {
@@ -154,7 +154,7 @@ public class ServletContainter {
 		}
 	}
 	
-	/** Returns a boolean indicating if server is running. */
+	/** @return a boolean indicating if server is running. */
 	public boolean isRunning() {
 		return server.isRunning();
 	}
@@ -210,6 +210,8 @@ public class ServletContainter {
 	 * Performs a GET request to this server.
 	 * This is a convenience method for doGet(client, new HttpGet(this, uri))
 	 * @see ServletContainter#doGet(HttpClient, HttpGet)
+	 * @param client {@linkplain HttpClient} instance
+	 * @param uri request URI
 	 */
 	public HttpResponse doGet(HttpClient client, String uri) throws IllegalArgumentException, RuntimeException {
 		return doGet(client, new HttpGet(this, uri));
@@ -230,6 +232,7 @@ public class ServletContainter {
 	 * Performs a GET request to this server.
 	 * This is a convenience method for doGet(new HttpGet(this, uri))
 	 * @see ServletContainter#doGet(HttpGet)
+	 * @param uri request URI
 	 */
 	public HttpResponse doGet(String uri) throws IllegalArgumentException, RuntimeException {
 		return doGet(new HttpGet(this, uri));

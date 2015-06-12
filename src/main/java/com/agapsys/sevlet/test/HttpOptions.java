@@ -22,7 +22,12 @@ import org.apache.http.client.methods.HttpRequestBase;
 public class HttpOptions extends HttpRequest {
 	private HttpRequestBase coreRequest = null;
 
-	/** @see HttpRequest#HttpRequest(ServletContainter, String). */
+	/**
+	 * @see HttpRequest#HttpRequest(ServletContainter, String)
+	 * @param servletContainer the {@linkplain ServletContainter} associated to this request
+	 * @param uri request URI (request will be performed against given {@linkplain ServletContainter}.
+	 * @throws IllegalArgumentException if given URI is invalid
+	 */
 	public HttpOptions(ServletContainter servletContainer, String uri) throws IllegalArgumentException {
 		super(servletContainer, uri);
 	}

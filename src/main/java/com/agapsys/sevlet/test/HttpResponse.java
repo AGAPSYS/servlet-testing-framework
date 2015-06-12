@@ -72,29 +72,29 @@ public class HttpResponse {
 		}
 	}
 	
-	/** Returns response status line. */
+	/** @return response status line. */
 	public int getStatusCode() {
 		return coreResponse.getStatusLine().getStatusCode();
 	}
 
-	/** Returns the response body. */
+	/** @return the response body. */
 	public String getResponseBody() {
 		return responseBody;
 	}
 
-	/** Returns the locale of the response. */
+	/** @return the locale of the response. */
 	public Locale getLocale() {
 		return coreResponse.getLocale();
 	}
 
-	/** Returns the version of the protocol.  */
+	/** @return the version of the protocol.  */
 	public String getProtocolVersion() {
 		ProtocolVersion pv = coreResponse.getProtocolVersion();
 		return String.format("%s.%s", pv.getMajor(), pv.getMinor());
 	}
 
 	/** 
-	 * Returns a boolean indicating if response contains given header.
+	 * @return a boolean indicating if response contains given header.
 	 * @param name header name
 	 * @throws IllegalArgumentException  if given name == null or name.isEmpty()
 	 */
@@ -105,7 +105,7 @@ public class HttpResponse {
 	}
 
 	/** 
-	 * Returns all response headers headers with given name
+	 * @return all response headers headers with given name
 	 * @param name header name
 	 * @throws IllegalArgumentException  if name == null or name.isEmpty()
 	 */
@@ -124,7 +124,7 @@ public class HttpResponse {
 	}
 
 	/**
-	 * Returns the first header with given name
+	 * @return the first header with given name
 	 * @param name header name
 	 * @throws IllegalArgumentException  if name == null or name.isEmpty()
 	 */
@@ -136,7 +136,7 @@ public class HttpResponse {
 		return new HttpHeader(header.getName(), header.getValue());
 	}
 	
-	/** Returns all the headers of this message. */
+	/** @return all the headers of this message. */
 	public Set<HttpHeader> getAllHeaders() {
 		Header[] headers = coreResponse.getAllHeaders();
 		Set<HttpHeader> httpHeaders = new LinkedHashSet<>();

@@ -16,7 +16,7 @@
 
 package com.agapsys.sevlet.test;
 
-import com.agapsys.sevlet.test.http.util.NameValuePair;
+import com.agapsys.sevlet.test.util.NameValuePair;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.http.Header;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.params.BasicHttpParams;
 
 /** Represents an HTTP request. */
 public abstract class HttpRequest {
@@ -130,22 +129,22 @@ public abstract class HttpRequest {
 	/** Set request parameters into coreRequest object. Default implementation does nothing */
 	void setCoreParameters(HttpRequestBase coreRequest, Map<String, String> parameters) {}
 	
-	/** returns the name of the method. */
+	/** @return The name of HTTP method associated with this request */
 	public String getMethod() {
 		return getCoreRequest().getMethod();
 	}
 
-	/** Returns associated servlet container. */
+	/** @return Associated servlet container. */
 	public ServletContainter getServletContainter() {
 		return servletContainter;
 	}
 
-	/** Returns the URI-base (URI without any parameter information). */
+	/** @return The URI-base (URI without any parameter information). */
 	String getUriBase() {
 		return uriBase;
 	}
 	
-	/** Returns request URI. */
+	/** @return Request URI. */
 	public String getUri() {
 		StringBuilder sb = new StringBuilder(uriBase + "?");
 		try {
@@ -202,7 +201,10 @@ public abstract class HttpRequest {
 		}
 	}
 	
-	/** Returns the parameter with given name. If there is no such parameter, returns null. */
+	/**
+	 * @return The parameter with given name. If there is no such parameter, returns null.
+	 * @param name name of the parameter to be retrieved
+	 */
 	public HttpParameter getParameter(String name) {
 		if (parameters.containsKey(name)) {
 			String value = parameters.get(name);
@@ -212,7 +214,7 @@ public abstract class HttpRequest {
 		}
 	}
 	
-	/** Returns all parameters associated to this request. */
+	/** @return All parameters associated with this request. */
 	public Set<HttpParameter> getParameters() {
 		Set<HttpParameter> paramSet = new LinkedHashSet<>();
 		for (Map.Entry<String, String> entry : parameters.entrySet()) {
@@ -277,7 +279,7 @@ public abstract class HttpRequest {
 		}
 	}
 
-	/** Returns all headers associated to this request. */
+	/** @return All headers associated to this request. */
 	public Set<HttpHeader> getHeaders() {
 		Set<HttpHeader> headerSet = new LinkedHashSet<>();
 		
@@ -292,7 +294,7 @@ public abstract class HttpRequest {
 	/**
 	 * Returns all headers with given name.
 	 * @param name header name
-	 * @return all registered headers with given name. If there are no such headers, an empty set is returned
+	 * @return All registered headers with given name. If there are no such headers, an empty set is returned
 	 * @throws IllegalArgumentException if name is null or empty
 	 */
 	public Set<HttpHeader> getHeaders(String name) throws IllegalArgumentException {
@@ -311,7 +313,7 @@ public abstract class HttpRequest {
 	
 	/**
 	 * Removes all headers with given name.
-	 * @param name
+	 * @param name name of the headers to be removed.
 	 * @throws IllegalArgumentException if name == null or name.isEmpty()
 	 */
 	public void removeHeaders(String name) throws IllegalArgumentException {
