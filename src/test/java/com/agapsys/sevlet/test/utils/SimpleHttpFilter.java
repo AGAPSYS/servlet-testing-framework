@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.agapsys.hsmock.test.utils;
+package com.agapsys.sevlet.test.utils;
 
 import java.io.IOException;
 import javax.servlet.Filter;

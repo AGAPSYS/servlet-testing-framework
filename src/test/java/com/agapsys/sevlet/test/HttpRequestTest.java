@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package com.agapsys.hsmock.test;
+package com.agapsys.sevlet.test;
 
-import com.agapsys.sevlet.test.HttpGet;
-import com.agapsys.sevlet.test.HttpPost;
-import com.agapsys.sevlet.test.ServletContainter;
 import static org.junit.Assert.*;
 import org.junit.Test;
 

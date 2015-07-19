@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-package com.agapsys.hsmock.test;
+package com.agapsys.sevlet.test;
 
-import com.agapsys.hsmock.test.utils.MyServlet;
-import com.agapsys.sevlet.test.AppContext;
-import com.agapsys.sevlet.test.ServletContainter;
-import com.agapsys.hsmock.test.utils.MyFilter;
-import com.agapsys.sevlet.test.HttpGet;
-import com.agapsys.sevlet.test.HttpResponse;
+import com.agapsys.sevlet.test.utils.MyServlet;
+import com.agapsys.sevlet.test.utils.MyFilter;
 import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
