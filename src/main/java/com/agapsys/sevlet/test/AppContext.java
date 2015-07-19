@@ -58,7 +58,9 @@ public class AppContext  {
 			throw new IllegalArgumentException("Servlet class does not have a WebFilter annotation");
 		
 		for (WebFilter annotation : annotations) {
-			String[] urlPatterns = annotation.urlPatterns();
+			String[] urlPatterns = annotation.value();
+			if (urlPatterns.length == 0)
+				urlPatterns = annotation.urlPatterns();
 			
 			if (urlPatterns.length == 0)
 				throw new IllegalArgumentException("Missing urlPatterns");
@@ -91,7 +93,9 @@ public class AppContext  {
 			throw new IllegalArgumentException("Servlet class does not have a WebServlet annotation");
 		
 		for (WebServlet annotation : annotations) {
-			String[] urlPatterns = annotation.urlPatterns();
+			String[] urlPatterns = annotation.value();
+			if (urlPatterns.length == 0)
+				urlPatterns = annotation.urlPatterns();
 			
 			if (urlPatterns.length == 0)
 				throw new IllegalArgumentException("Missing urlPatterns");

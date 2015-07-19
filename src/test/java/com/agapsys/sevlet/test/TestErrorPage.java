@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 
 public class TestErrorPage {
 	// CLASS SCOPE =============================================================
-	@WebServlet(urlPatterns = {ExceptionPage.URL})
+	@WebServlet(ExceptionPage.URL)
 	public static class ExceptionPage extends HttpServlet {
 		public static final String URL = "/exception";
 		
@@ -40,7 +40,7 @@ public class TestErrorPage {
 		}
 	}
 	
-	@WebServlet(urlPatterns = {ErrorPage.URL})
+	@WebServlet(ErrorPage.URL)
 	public static class ErrorPage extends HttpServlet {
 		public static final String URL = "/error";
 		public static final String RESPONSE_MESSAGE = "Error captured";
