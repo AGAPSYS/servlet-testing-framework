@@ -22,12 +22,18 @@ import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebServlet;
+import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /** Represents an application context. */
 public class AppContext  {
 	// INSTANCE SCOPE ==========================================================
 	private final ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+	private final ErrorPageErrorHandler errorHandler = new ErrorPageErrorHandler();
+
+	public AppContext() {
+		contextHandler.setErrorHandler(errorHandler);
+	}
 	
 	/**
 	 * Registers a filter in this application context
@@ -94,6 +100,19 @@ public class AppContext  {
 				registerServlet(servletClass, urlPattern);
 			}
 		}
+	}
+	
+	/**
+	 * Registers a servlet with given error code
+	 * @param code error code
+	 * @param url url to be associated with error code
+	 * @throws IllegalArgumentException if url == null || url.isEmtpy()
+	 */
+	public void registerErrorPage(int code, String url) throws IllegalArgumentException {
+		if (url == null || url.isEmpty())
+			throw new IllegalArgumentException("Null/Empty url");
+		
+		errorHandler.addErrorPage(code, url);
 	}
 	
 	/** @return returns wrapped context handler */
