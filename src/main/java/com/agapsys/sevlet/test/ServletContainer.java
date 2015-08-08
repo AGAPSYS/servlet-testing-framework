@@ -28,7 +28,7 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.util.log.Logger;
 
 /** Represents a servlet container */
-public class ServletContainter {
+public class ServletContainer {
 	// CLASS SCOPE =============================================================
 	private static class NoLogger implements Logger {
 		// CLASS SCOPE =========================================================
@@ -71,10 +71,10 @@ public class ServletContainter {
 	// INSTANCE SCOPE ==========================================================
 	private final Server server;
 	private final ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();
-	private final Map<String, AppContext> contextMap = new HashMap<>();
+	private final Map<String, ApplicationContext> contextMap = new HashMap<>();
 	
 	/** Constructor. */
-	public ServletContainter() {
+	public ServletContainer() {
 		server = new Server(0);
 	}
 	
@@ -90,7 +90,7 @@ public class ServletContainter {
 	}
 	
 	/**
-	 * Register an application {@link AppContext context}
+	 * Register an application {@link ApplicationContext context}
 	 * @param context application context
 	 * @param contextPath associated URL
 	 * @throws IllegalArgumentException if any of the following conditions occurs:
@@ -100,7 +100,7 @@ public class ServletContainter {
 	 *		<li>contextPath is already registered</li>
 	 * </ul>
 	 */
-	public void registerContext(AppContext context, String contextPath) throws IllegalArgumentException {
+	public void registerContext(ApplicationContext context, String contextPath) throws IllegalArgumentException {
 		if (contextPath == null || contextPath.isEmpty())
 			throw new IllegalArgumentException("Null/empty contextPath");
 		
@@ -119,8 +119,8 @@ public class ServletContainter {
 	 */
 	public void startServer() throws RuntimeException {
 		// Register contexts with the server...
-		for(Map.Entry<String, AppContext> entry : contextMap.entrySet()) {
-			AppContext context = entry.getValue();
+		for(Map.Entry<String, ApplicationContext> entry : contextMap.entrySet()) {
+			ApplicationContext context = entry.getValue();
 			String contextPath = entry.getKey();
 			
 			context.getContextHandler().setContextPath(contextPath);
@@ -129,7 +129,7 @@ public class ServletContainter {
 		Handler[] handlers = new Handler[contextMap.size()];
 		
 		int i = 0;
-		for(AppContext contextMock : contextMap.values()) {
+		for(ApplicationContext contextMock : contextMap.values()) {
 			handlers[i] = contextMock.getContextHandler();
 		}
 		
@@ -209,7 +209,7 @@ public class ServletContainter {
 	/**
 	 * Performs a GET request to this server.
 	 * This is a convenience method for doGet(client, new HttpGet(this, uri))
-	 * @see ServletContainter#doGet(HttpClient, HttpGet)
+	 * @see ServletContainer#doGet(HttpClient, HttpGet)
 	 * @param client {@linkplain HttpClient} instance
 	 * @param uri request URI
 	 */
@@ -231,7 +231,7 @@ public class ServletContainter {
 	/**
 	 * Performs a GET request to this server.
 	 * This is a convenience method for doGet(new HttpGet(this, uri))
-	 * @see ServletContainter#doGet(HttpGet)
+	 * @see ServletContainer#doGet(HttpGet)
 	 * @param uri request URI
 	 */
 	public HttpResponse doGet(String uri) throws IllegalArgumentException, RuntimeException {

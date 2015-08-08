@@ -51,7 +51,7 @@ public abstract class HttpRequest {
 	// =========================================================================
 	
 	// INSTANCE SCOPE ==========================================================
-	private final ServletContainter servletContainter;
+	private final ServletContainer servletContainter;
 	private String uriBase;
 	private final Map<String, String> parameters = new LinkedHashMap<>();
 	
@@ -96,11 +96,11 @@ public abstract class HttpRequest {
 	
 	/** 
 	 * Constructor.
-	 * @param servletContainer the {@linkplain ServletContainter} associated to this request
-	 * @param uri request URI (request will be performed against given {@linkplain ServletContainter}.
+	 * @param servletContainer the {@link ServletContainer} associated to this request
+	 * @param uri request URI (request will be performed against given {@link ServletContainer}.
 	 * @throws IllegalArgumentException if given URI is invalid
 	 */
-	public HttpRequest(ServletContainter servletContainer, String uri) throws IllegalArgumentException {
+	public HttpRequest(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
 		if (servletContainer == null)
 			throw new IllegalArgumentException("Null servletContainer");
 		
@@ -135,7 +135,7 @@ public abstract class HttpRequest {
 	}
 
 	/** @return Associated servlet container. */
-	public ServletContainter getServletContainter() {
+	public ServletContainer getServletContainter() {
 		return servletContainter;
 	}
 

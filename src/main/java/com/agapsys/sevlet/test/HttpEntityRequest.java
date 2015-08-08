@@ -28,7 +28,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 public abstract class HttpEntityRequest extends HttpRequest{
 
-	public HttpEntityRequest(ServletContainter servletContainer, String uri) throws IllegalArgumentException {
+	public HttpEntityRequest(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
 		super(servletContainer, uri);
 		
 		if (uri.contains("?"))

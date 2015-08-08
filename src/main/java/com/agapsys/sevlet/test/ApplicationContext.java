@@ -26,12 +26,12 @@ import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /** Represents an application context. */
-public class AppContext  {
+public class ApplicationContext  {
 	// INSTANCE SCOPE ==========================================================
 	private final ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
 	private final ErrorPageErrorHandler errorHandler = new ErrorPageErrorHandler();
 
-	public AppContext() {
+	public ApplicationContext() {
 		contextHandler.setErrorHandler(errorHandler);
 	}
 	

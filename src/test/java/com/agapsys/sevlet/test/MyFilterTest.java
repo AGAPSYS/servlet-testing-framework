@@ -27,13 +27,13 @@ import static org.junit.Assert.*;
 public class MyFilterTest {
 	private static final String CONTEXT = "/context";
 	
-	private ServletContainter sc;
+	private ServletContainer sc;
 	
 	@Before
 	public void setUp() {
-		sc = new ServletContainter();
+		sc = new ServletContainer();
 		
-		AppContext context = new AppContext();
+		ApplicationContext context = new ApplicationContext();
 		context.registerServlet(MyServlet.class);
 		context.registerFilter(MyFilter.class);
 		

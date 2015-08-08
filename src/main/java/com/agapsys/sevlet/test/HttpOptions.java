@@ -23,12 +23,12 @@ public class HttpOptions extends HttpRequest {
 	private HttpRequestBase coreRequest = null;
 
 	/**
-	 * @see HttpRequest#HttpRequest(ServletContainter, String)
-	 * @param servletContainer the {@linkplain ServletContainter} associated to this request
-	 * @param uri request URI (request will be performed against given {@linkplain ServletContainter}.
+	 * @see HttpRequest#HttpRequest(ServletContainer, String)
+	 * @param servletContainer the {@link ServletContainer} associated to this request
+	 * @param uri request URI (request will be performed against given {@link ServletContainer}.
 	 * @throws IllegalArgumentException if given URI is invalid
 	 */
-	public HttpOptions(ServletContainter servletContainer, String uri) throws IllegalArgumentException {
+	public HttpOptions(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
 		super(servletContainer, uri);
 	}
 	

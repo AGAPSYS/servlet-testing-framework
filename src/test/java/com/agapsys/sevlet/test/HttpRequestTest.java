@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class HttpRequestTest {
-	private final ServletContainter sc = new ServletContainter();
+	private final ServletContainer sc = new ServletContainer();
 	
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidUriParsingDueToProtocol() {

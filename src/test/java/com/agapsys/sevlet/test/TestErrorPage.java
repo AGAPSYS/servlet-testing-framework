@@ -51,13 +51,13 @@ public class TestErrorPage {
 		}
 	}
 	
-	private static ServletContainter sc;
+	private static ServletContainer sc;
 	
 	@BeforeClass
 	public static void beforeClass() {
-		sc = new ServletContainter();
+		sc = new ServletContainer();
 		
-		AppContext context = new AppContext();
+		ApplicationContext context = new ApplicationContext();
 		context.registerServlet(ExceptionPage.class);
 		context.registerServlet(ErrorPage.class);
 		
