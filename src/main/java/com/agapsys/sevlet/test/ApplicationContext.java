@@ -17,6 +17,7 @@
 package com.agapsys.sevlet.test;
 
 import java.util.EnumSet;
+import java.util.EventListener;
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
@@ -33,6 +34,14 @@ public class ApplicationContext  {
 
 	public ApplicationContext() {
 		contextHandler.setErrorHandler(errorHandler);
+	}
+	
+	/**
+	 * Register an event listener
+	 * @param listener event listener
+	 */
+	public void registerEventListener(EventListener listener) {
+		contextHandler.addEventListener(listener);
 	}
 	
 	/**
