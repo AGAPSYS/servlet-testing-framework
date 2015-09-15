@@ -30,11 +30,9 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 public class ApplicationContext  {
 	// INSTANCE SCOPE ==========================================================
 	private final ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-	private final ErrorPageErrorHandler errorHandler = new ErrorPageErrorHandler();
-
-	public ApplicationContext() {
-		contextHandler.setErrorHandler(errorHandler);
-	}
+	private ErrorPageErrorHandler errorPageHandler = null;
+	
+	public ApplicationContext() {}
 	
 	/**
 	 * Register an event listener
@@ -125,7 +123,12 @@ public class ApplicationContext  {
 		if (url == null || url.isEmpty())
 			throw new IllegalArgumentException("Null/Empty url");
 		
-		errorHandler.addErrorPage(code, url);
+		if (errorPageHandler == null) {
+			errorPageHandler = new ErrorPageErrorHandler();
+			contextHandler.setErrorHandler(errorPageHandler);
+		}
+		
+		errorPageHandler.addErrorPage(code, url);
 	}
 	
 	/** @return returns wrapped context handler */
