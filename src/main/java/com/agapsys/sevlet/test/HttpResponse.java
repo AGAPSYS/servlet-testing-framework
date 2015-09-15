@@ -133,7 +133,10 @@ public class HttpResponse {
 			throw new IllegalArgumentException("Null/Empty name");
 		
 		Header header = coreResponse.getFirstHeader(name);
-		return new HttpHeader(header.getName(), header.getValue());
+		if (header != null)
+			return new HttpHeader(header.getName(), header.getValue());
+		else
+			return null;
 	}
 	
 	/** @return all the headers of this message. */
