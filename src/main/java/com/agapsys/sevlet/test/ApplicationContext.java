@@ -23,6 +23,7 @@ import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebServlet;
+import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
@@ -30,7 +31,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 public class ApplicationContext  {
 	// INSTANCE SCOPE ==========================================================
 	private final ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-	private ErrorPageErrorHandler errorPageHandler = null;
+	private ErrorHandler errorHandler = null;
 	
 	public ApplicationContext() {}
 	
@@ -123,12 +124,21 @@ public class ApplicationContext  {
 		if (url == null || url.isEmpty())
 			throw new IllegalArgumentException("Null/Empty url");
 		
-		if (errorPageHandler == null) {
-			errorPageHandler = new ErrorPageErrorHandler();
-			contextHandler.setErrorHandler(errorPageHandler);
+		if (errorHandler == null || !(errorHandler instanceof ErrorPageErrorHandler)) {
+			errorHandler = new ErrorPageErrorHandler();
+			setErrorHandler(errorHandler);
 		}
 		
-		errorPageHandler.addErrorPage(code, url);
+		((ErrorPageErrorHandler)errorHandler).addErrorPage(code, url);
+	}
+	
+	/**
+	 * Registers an error page handler in application context
+	 * @param errorHandler error handler to be used
+	 */
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		this.errorHandler = errorHandler;
+		contextHandler.setErrorHandler(errorHandler);
 	}
 	
 	/** @return returns wrapped context handler */
