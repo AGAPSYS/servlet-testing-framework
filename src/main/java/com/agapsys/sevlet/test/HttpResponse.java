@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
@@ -32,21 +33,18 @@ import org.apache.http.ProtocolVersion;
 public class HttpResponse {
 	// CLASS SCOPE =============================================================
 	/** Reads a string from given input stream. */
-	private static String getStringFromInputStream(InputStream is) throws IOException {
-		BufferedReader br = null;
+	private static String getStringFromInputStream(InputStream is, String charset) throws IOException {
 		StringBuilder sb = new StringBuilder();
-
-		String line;
+		String line = null;
+		boolean firstLine = true;
 		
-		try {
-			br = new BufferedReader(new InputStreamReader(is));
-			
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(is, charset))) {
 			while ((line = br.readLine()) != null) {
+				if (!firstLine)
+					sb.append("\n");
+				
 				sb.append(line);
-			}
-		} finally {
-			if (br != null) {
-				br.close();
+				firstLine = false;
 			}
 		}
 
@@ -65,7 +63,16 @@ public class HttpResponse {
 		HttpEntity entity = coreResponse.getEntity();
 		if (entity != null) {
 			try (InputStream instream = entity.getContent()) {
-				this.responseBody = getStringFromInputStream(instream);
+				Header encodingHeader = entity.getContentEncoding();
+				String charset = null;
+						
+				if (encodingHeader != null)
+					charset = encodingHeader.getValue();
+					
+				if (charset == null)
+					charset = Charset.defaultCharset().name();
+				
+				this.responseBody = getStringFromInputStream(instream, charset);
 			}
 		} else {
 			responseBody = null;
