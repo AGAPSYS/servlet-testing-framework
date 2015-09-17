@@ -57,7 +57,7 @@ public class ErrorHandlerTest {
 		ApplicationContext context = new ApplicationContext();
 		context.registerServlet(ExceptionServlet.class);
 		
-		context.setErrorHandler(new StacktraceErrorPageHandler());
+		context.setErrorHandler(new StacktraceErrorHandler());
 		sc.registerContext(context, "/");
 		
 		sc.startServer();

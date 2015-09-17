@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.ErrorHandler;
 
-public class StacktraceErrorPageHandler extends ErrorHandler {
+public class StacktraceErrorHandler extends ErrorHandler {
 	// CLASS SCOPE =============================================================
 	private static final String ATTR_EXCEPTION = "javax.servlet.error.exception";
 	
