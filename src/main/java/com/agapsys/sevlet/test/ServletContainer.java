@@ -167,7 +167,7 @@ public class ServletContainer {
 	 * @throws IllegalArgumentException if client == null  or request == null
 	 * @throws RuntimeException if request fails
 	 */
-	private HttpResponse doRequest(HttpClient client, HttpRequest request) throws IllegalArgumentException, RuntimeException {
+	protected HttpResponse doRequest(HttpClient client, HttpRequest request) throws IllegalArgumentException, RuntimeException {
 		if (client == null)
 			throw new IllegalArgumentException("Null client");
 		
@@ -189,7 +189,7 @@ public class ServletContainer {
 	 * @return response
 	 * @throws RuntimeException if request fails
 	 */
-	private HttpResponse doRequest(HttpRequest request) throws RuntimeException {
+	protected HttpResponse doRequest(HttpRequest request) throws RuntimeException {
 		HttpClient httpclient = new HttpClient();
 		return doRequest(httpclient, request);
 	}
