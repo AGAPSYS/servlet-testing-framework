@@ -30,16 +30,25 @@ public class StacktraceErrorHandler extends ErrorHandler {
 	
 	private static String getStackTrace(Request baseRequest) {
 		Throwable throwable = (Throwable) baseRequest.getAttribute(ATTR_EXCEPTION);
-		StringWriter stringWriter = new StringWriter();
-		throwable.printStackTrace(new PrintWriter(stringWriter));
-		return stringWriter.toString();
+		if (throwable != null) {
+			StringWriter stringWriter = new StringWriter();
+			throwable.printStackTrace(new PrintWriter(stringWriter));
+			return stringWriter.toString();
+		} else {
+			return null;
+		}
 	}
 	// =========================================================================
 	
 	// INSTANCE SCOPE ==========================================================
 	@Override
 	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
-		response.getWriter().print(getStackTrace(baseRequest));
+		String stackTrace = getStackTrace(baseRequest);
+		if (stackTrace != null) {
+			response.getWriter().print(getStackTrace(baseRequest));
+		} else {
+			super.handle(target, baseRequest, request, response);
+		}
 	}
 	// =========================================================================
 }
