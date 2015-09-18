@@ -114,6 +114,15 @@ public class ServletContainer {
 	}
 	
 	/**
+	 * Registers an application in root contextPath
+	 * @param context application context
+	 * @throws IllegalArgumentException if context == null
+	 */
+	public void registerContext(ApplicationContext context) throws IllegalArgumentException {
+		registerContext(context, "/");
+	}
+	
+	/**
 	 * Starts server
 	 * @throws RuntimeException if server fails to start
 	 */
