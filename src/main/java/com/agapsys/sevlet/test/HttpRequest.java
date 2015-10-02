@@ -77,7 +77,8 @@ public abstract class HttpRequest {
 	/** Returns wrapped {@linkplain HttpRequestBase}. */
 	final HttpRequestBase getCoreRequest() {
 		if (coreRequest == null) {
-			coreRequest = getCoreRequest(getUri());
+			String fullUrl = String.format("http://localhost:%d%s", servletContainter.getLocalPort(), getUri());
+			coreRequest = getCoreRequest(fullUrl);
 		}
 		
 		return coreRequest;

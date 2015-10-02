@@ -21,8 +21,8 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 
 public abstract class StringEntityRequest extends HttpEntityRequest {
-	private ContentType contentType = null;
-	private String      contentBody = null;
+	private ContentType contentType = ContentType.TEXT_PLAIN;
+	private String      contentBody = "";
 
 	public StringEntityRequest(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
 		super(servletContainer, uri);
