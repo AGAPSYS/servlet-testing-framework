@@ -37,8 +37,10 @@ public class MyServlet extends HttpServlet{
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		if (req.getPathInfo().equals(URL2))
-			resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+		if (req.getPathInfo().equals(URL2)) {
+			resp.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+			resp.flushBuffer();
+		}
 		
 
 		resp.getWriter().print(req.getServletPath());
