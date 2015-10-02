@@ -20,24 +20,12 @@ import org.apache.http.client.methods.HttpRequestBase;
 
 /** Represents a HTTP 'OPTIONS' request. */
 public class HttpOptions extends HttpRequest {
-	private HttpRequestBase coreRequest = null;
-
-	/**
-	 * @see HttpRequest#HttpRequest(ServletContainer, String)
-	 * @param servletContainer the {@link ServletContainer} associated to this request
-	 * @param uri request URI (request will be performed against given {@link ServletContainer}.
-	 * @throws IllegalArgumentException if given URI is invalid
-	 */
 	public HttpOptions(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
 		super(servletContainer, uri);
 	}
 	
 	@Override
-	HttpRequestBase getCoreRequest() {
-		if (coreRequest == null) {
-			coreRequest = new org.apache.http.client.methods.HttpOptions(getUri());
-		}
-		
-		return coreRequest;
+	HttpRequestBase getCoreRequest(String uri) {
+		return new org.apache.http.client.methods.HttpOptions(uri);
 	}
 }

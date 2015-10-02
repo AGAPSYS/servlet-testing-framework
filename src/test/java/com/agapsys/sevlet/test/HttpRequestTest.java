@@ -42,11 +42,6 @@ public class HttpRequestTest {
 		HttpGet get = new HttpGet(sc, "context/path");
 	}
 	
-	@Test(expected = IllegalArgumentException.class)
-	public void testInvalidUriDueToVerb() {
-		new HttpPost(sc, "/context?var=1");
-	}
-	
 	@Test
 	public void testValidGetUri() {
 		new HttpGet(sc, "/context?var=1");
@@ -55,23 +50,5 @@ public class HttpRequestTest {
 	@Test
 	public void testValidPostUri() {
 		new HttpPost(sc, "/context");
-	}
-	
-	@Test
-	public void testRetrieveUriParametersFromUrl() {
-		String uri = "/context?var1=1&var2=2&çã=á";
-		HttpGet get = new HttpGet(sc, uri);
-		assertEquals("1", get.getParameter("var1").getValue());
-		assertEquals("2", get.getParameter("var2").getValue());
-		assertEquals("á", get.getParameter("çã").getValue());
-	}
-	
-	@Test
-	public void testRetriveUriAfterAddingParameters() {
-		HttpGet get = new HttpGet(sc, "/context");
-		get.addParameter("var1", "1");
-		get.addParameter("var2", "2");
-		get.addParameter("çã", "3");
-		assertEquals("/context?var1=1&var2=2&%C3%A7%C3%A3=3", get.getUri());
 	}
 }

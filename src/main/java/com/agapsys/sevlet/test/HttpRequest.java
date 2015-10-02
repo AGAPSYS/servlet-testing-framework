@@ -17,15 +17,10 @@
 package com.agapsys.sevlet.test;
 
 import com.agapsys.sevlet.test.util.NameValuePair;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 import org.apache.http.Header;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -52,47 +47,9 @@ public abstract class HttpRequest {
 	
 	// INSTANCE SCOPE ==========================================================
 	private final ServletContainer servletContainter;
-	private String uriBase;
-	private final Map<String, String> parameters = new LinkedHashMap<>();
+	private final String uri;
 	
-	private void parseUri(String uri) throws IllegalArgumentException {
-		int paramDelimiterIndex = uri.indexOf("?");
-		
-		String baseUri;
-	
-		if (paramDelimiterIndex != -1) {
-			baseUri = uri.substring(0, paramDelimiterIndex);
-		} else {
-			baseUri = uri;
-		}
-		
-		if (paramDelimiterIndex != -1) {
-			String paramsStr = uri.substring(paramDelimiterIndex + 1);
-			String[] paramTokens = paramsStr.split("&");
-			
-			for (String paramToken : paramTokens) {
-				String[] paramTokenPair = paramToken.split("=");
-				
-				if (paramTokenPair.length != 2) {
-					if (paramTokenPair.length > 0)
-						throw new IllegalArgumentException("Malformed parameter: " + paramTokenPair[0]);
-					else
-						throw new IllegalArgumentException("Malformed uri: " + uri);
-				}
-				
-				try {
-					String name = URLDecoder.decode(paramTokenPair[0], "UTF-8");
-					String value = URLDecoder.decode(paramTokenPair[1], "UTF-8");
-					parameters.put(name, value);
-
-				} catch (UnsupportedEncodingException ex) {
-					throw new RuntimeException(ex);
-				}
-			}
-		}
-		
-		this.uriBase = baseUri;
-	}
+	private HttpRequestBase coreRequest = null;
 	
 	/** 
 	 * Constructor.
@@ -112,22 +69,28 @@ public abstract class HttpRequest {
 		if (uri.contains(":") || uri.contains(" ") || !uri.startsWith("/"))
 			throw new IllegalArgumentException("Invalid uri: " + uri);
 		
-		parseUri(uri);
+		this.uri = uri;
 	}
+	
+	abstract HttpRequestBase getCoreRequest(String uri);
 	
 	/** Returns wrapped {@linkplain HttpRequestBase}. */
-	abstract HttpRequestBase getCoreRequest();
-	
-	/** Performs required actions with wrapped {@linkplain HttpRequestBase}. */
-	void doPreSend() {
-		try {
-			setCoreParameters(getCoreRequest(), parameters);
-			getCoreRequest().setURI(new URI(String.format("http://localhost:%d%s", servletContainter.getLocalPort(), getUri())));
-		} catch (URISyntaxException ignore) {}
+	final HttpRequestBase getCoreRequest() {
+		if (coreRequest == null) {
+			coreRequest = getCoreRequest(getUri());
+		}
+		
+		return coreRequest;
 	}
-	
-	/** Set request parameters into coreRequest object. Default implementation does nothing */
-	void setCoreParameters(HttpRequestBase coreRequest, Map<String, String> parameters) {}
+		
+	/** Performs required actions with wrapped {@linkplain HttpRequestBase}. */
+	void beforeSend() {
+		try {
+			getCoreRequest().setURI(new URI(String.format("http://localhost:%d%s", servletContainter.getLocalPort(), getUri())));
+		} catch (URISyntaxException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
 	
 	/** @return The name of HTTP method associated with this request */
 	public String getMethod() {
@@ -138,109 +101,16 @@ public abstract class HttpRequest {
 	public ServletContainer getServletContainter() {
 		return servletContainter;
 	}
-
-	/** @return The URI-base (URI without any parameter information). */
-	String getUriBase() {
-		return uriBase;
-	}
 	
 	/** @return Request URI. */
 	public String getUri() {
-		StringBuilder sb = new StringBuilder(uriBase + "?");
-		try {
-			int i = 0;
-			for (Map.Entry<String, String> parameter : parameters.entrySet()) {
-				if (i > 0)
-					sb.append("&");
-				
-				sb.append(URLEncoder.encode(parameter.getKey(), "UTF-8"));
-				sb.append("=");
-				sb.append(URLEncoder.encode(parameter.getValue(), "UTF-8"));
-				i++;
-			}
-			return sb.toString();
-		} catch (UnsupportedEncodingException ex) {
-			throw new RuntimeException(ex);
-		}
+		return uri;
 	}
 
 	@Override
 	public String toString() {
-		return getUri();
+		return String.format("%s %s", getMethod(), getUri());
 	}
-	
-	// Parameters --------------------------------------------------------------
-	/**
-	 * Adds a parameter to this request.
-	 * @param name name of the parameter. Parameter name must be unique in the request. If a parameter with the same name is already associated to this request, its value will be overwritten.
-	 * @param value parameter value
-	 * @throws IllegalArgumentException if either parameter name is null or empty
-	 */
-	public void addParameter(String name, String value) throws IllegalArgumentException {
-		if (name == null || name.isEmpty())
-			throw new IllegalArgumentException("Null/Empty name");
-		parameters.put(name, value);
-	}
-
-	/**
-	 * Adds given parameters to this request.
-	 * @param parameters parameters to be added. Parameter names must be unique in the request. If a parameter with the same name is already associated to this request, its value will be overwritten.
-	 * @throws IllegalArgumentException if no parameters are passed or any of given parameters is null
-	 */
-	public void addParameters(HttpParameter...parameters) throws IllegalArgumentException {
-		if (parameters.length == 0)
-			throw new IllegalArgumentException("Empty parameters");
-		
-		int i = 0;
-		for (HttpParameter parameter : parameters) {
-			if (parameter == null)
-				throw new IllegalArgumentException("Null parameter on index " + i);
-			
-			addParameter(parameter.getName(), parameter.getValue());
-			i++;
-		}
-	}
-	
-	/**
-	 * @return The parameter with given name. If there is no such parameter, returns null.
-	 * @param name name of the parameter to be retrieved
-	 */
-	public HttpParameter getParameter(String name) {
-		if (parameters.containsKey(name)) {
-			String value = parameters.get(name);
-			return new HttpParameter(name, value);
-		} else {
-			return null;
-		}
-	}
-	
-	/** @return All parameters associated with this request. */
-	public Set<HttpParameter> getParameters() {
-		Set<HttpParameter> paramSet = new LinkedHashSet<>();
-		for (Map.Entry<String, String> entry : parameters.entrySet()) {
-			paramSet.add(new HttpParameter(entry.getKey(), entry.getValue()));
-		}
-		
-		return Collections.unmodifiableSet(paramSet);
-	}
-
-	/**
-	 * Removes an associated parameter. If there is no such parameter, nothing happens.
-	 * @param name name of the parameter to be removed
-	 * @throws IllegalArgumentException if name is null/empty
-	 */
-	public void removeParameter(String name) throws IllegalArgumentException {
-		if (name == null || name.isEmpty())
-			throw new IllegalArgumentException("Null/Empty name");
-		
-		parameters.remove(name);
-	}
-	
-	/** Removes all associated parameters */
-	public void clearParameters() {
-		parameters.clear();
-	}
-	// -------------------------------------------------------------------------
 	
 	// Headers -----------------------------------------------------------------
 	/**

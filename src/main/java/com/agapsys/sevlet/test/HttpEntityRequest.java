@@ -16,41 +16,18 @@
 
 package com.agapsys.sevlet.test;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.message.BasicNameValuePair;
 
-public abstract class HttpEntityRequest extends HttpRequest{
-
+public abstract class HttpEntityRequest extends HttpRequest {
 	public HttpEntityRequest(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
 		super(servletContainer, uri);
-		
-		if (uri.contains("?"))
-			throw new IllegalArgumentException("Invalid uri: " + uri);
 	}
-
+	
+	protected abstract HttpEntity getEntity();
+	
 	@Override
-	void setCoreParameters(HttpRequestBase coreRequest, Map<String, String> parameters) {
-		try {
-			List<NameValuePair> urlParameters = new ArrayList<>();
-			for (Map.Entry<String, String> parameter : parameters.entrySet()) {
-				urlParameters.add(new BasicNameValuePair(parameter.getKey(), parameter.getValue()));
-			}
-
-			((HttpEntityEnclosingRequestBase)getCoreRequest()).setEntity(new UrlEncodedFormEntity(urlParameters));
-		} catch (UnsupportedEncodingException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
-
-	@Override
-	public String getUri() {
-		return super.getUriBase();
+	final void beforeSend() {
+		((HttpEntityEnclosingRequestBase)getCoreRequest()).setEntity(getEntity());
 	}
 }

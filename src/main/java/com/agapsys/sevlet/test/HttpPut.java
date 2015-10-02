@@ -19,25 +19,13 @@ package com.agapsys.sevlet.test;
 import org.apache.http.client.methods.HttpRequestBase;
 
 /** Represents a HTTP 'PUT' request. */
-public class HttpPut extends HttpEntityRequest {
-	private HttpRequestBase coreRequest = null;
-
-	/** 
-	 * @see HttpRequest#HttpRequest(ServletContainer, String)
-	 * @param servletContainer the {@link ServletContainer} associated to this request
-	 * @param uri request URI (request will be performed against given {@link ServletContainer}.
-	 * @throws IllegalArgumentException if given URI is invalid
-	 */
+public class HttpPut extends StringEntityRequest {
 	public HttpPut(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
 		super(servletContainer, uri);
 	}
 
 	@Override
-	HttpRequestBase getCoreRequest() {
-		if (coreRequest == null) {
-			coreRequest = new org.apache.http.client.methods.HttpPut(getUri());
-		}
-		
-		return coreRequest;
+	HttpRequestBase getCoreRequest(String uri) {
+		return new org.apache.http.client.methods.HttpPut(uri);
 	}
 }

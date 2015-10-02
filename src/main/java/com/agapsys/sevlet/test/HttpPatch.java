@@ -18,14 +18,14 @@ package com.agapsys.sevlet.test;
 
 import org.apache.http.client.methods.HttpRequestBase;
 
-/** Represents a HTTP 'TRACE' request. */
-public class HttpTrace extends HttpRequest {
-	public HttpTrace(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
+/** Represents a HTTP 'PATCH' request. */
+public class HttpPatch extends StringEntityRequest {
+	public HttpPatch(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
 		super(servletContainer, uri);
 	}
-	
+
 	@Override
 	HttpRequestBase getCoreRequest(String uri) {
-		return new org.apache.http.client.methods.HttpTrace(uri);
+		return new org.apache.http.client.methods.HttpPatch(uri);
 	}
 }

@@ -183,7 +183,7 @@ public class ServletContainer {
 		if (request == null)
 			throw new IllegalArgumentException("Null request");
 		
-		request.doPreSend();
+		request.beforeSend();
 		
 		try {
 			return new HttpResponse(client.getCoreClient().execute(request.getCoreRequest()));
@@ -382,6 +382,30 @@ public class ServletContainer {
 	 * @throws RuntimeException if request fails
 	 */
 	public HttpResponse doTrace(HttpTrace request) throws IllegalArgumentException, RuntimeException {
+		return doRequest(request);
+	}
+	
+	
+	/**
+	 * Performs a PATCH request to this server
+	 * @param client {@linkplain HttpClient} instance
+	 * @param request {@linkplain HttpPatch PATCH request} instance
+	 * @return server {@link HttpResponse response}
+	 * @throws IllegalArgumentException if client == null or request == null
+	 * @throws RuntimeException if request fails
+	 */
+	public HttpResponse doPut(HttpClient client, HttpPatch request) throws IllegalArgumentException, RuntimeException {
+		return doRequest(client, request);
+	}
+	
+	/**
+	 * Performs a PATCH request to this server
+	 * @param request {@linkplain HttpPatch PATCH request} instance
+	 * @return server {@link HttpResponse response}
+	 * @throws IllegalArgumentException if request == null
+	 * @throws RuntimeException if request fails
+	 */
+	public HttpResponse doPut(HttpPatch request) throws IllegalArgumentException, RuntimeException {
 		return doRequest(request);
 	}
 	// =========================================================================
