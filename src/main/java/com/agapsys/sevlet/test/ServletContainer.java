@@ -20,12 +20,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.util.log.Logger;
+import org.eclipse.jetty.util.log.StdErrLog;
 
 /** Represents a servlet container */
 public class ServletContainer {
@@ -45,7 +45,7 @@ public class ServletContainer {
 		// INSTANCE SCOPE ======================================================
 		private NoLogger() {}
 		
-		@Override public String getName() { return "no"; }
+		@Override public String getName() { return ""; }
 		@Override public void warn(String msg, Object... args) { }
 		@Override public void warn(Throwable thrown) { }
 		@Override public void warn(String msg, Throwable thrown) { }
@@ -64,6 +64,13 @@ public class ServletContainer {
 	}
 	
 	static {
+		Map<String, Logger> loggers = org.eclipse.jetty.util.log.Log.getLoggers();
+		for (Map.Entry<String, Logger> entry : loggers.entrySet()) {
+			Logger logger = entry.getValue();
+			
+			((StdErrLog)logger).setLevel(StdErrLog.LEVEL_OFF);
+		}
+		
 		org.eclipse.jetty.util.log.Log.setLog(NoLogger.getSingletonInstance());
 	}
 	// =========================================================================
