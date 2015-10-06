@@ -143,7 +143,7 @@ public class ApplicationContext  {
 	
 	/** @return returns wrapped context handler */
 	ServletContextHandler getContextHandler() {
-		return this.contextHandler;
+		return contextHandler;
 	}
 	// =========================================================================
 }

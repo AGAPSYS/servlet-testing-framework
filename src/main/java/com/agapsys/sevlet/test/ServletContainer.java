@@ -111,6 +111,7 @@ public class ServletContainer {
 			throw new IllegalArgumentException("Context path is already registered: " + contextPath);
 
 		contextMap.put(contextPath, context);
+		context.getContextHandler().setContextPath(contextPath);
 	}
 	
 	/**
@@ -129,8 +130,9 @@ public class ServletContainer {
 	public void startServer() throws RuntimeException {
 		// Register contexts with the server...
 		for(Map.Entry<String, ApplicationContext> entry : contextMap.entrySet()) {
-			ApplicationContext context = entry.getValue();
-			String contextPath = entry.getKey();
+			
+			String             contextPath = entry.getKey();
+			ApplicationContext context     = entry.getValue();
 			
 			context.getContextHandler().setContextPath(contextPath);
 		}
@@ -140,6 +142,7 @@ public class ServletContainer {
 		int i = 0;
 		for(ApplicationContext contextMock : contextMap.values()) {
 			handlers[i] = contextMock.getContextHandler();
+			i++;
 		}
 		
 		contextHandlerCollection.setHandlers(handlers);
