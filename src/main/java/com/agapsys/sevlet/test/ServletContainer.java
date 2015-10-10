@@ -16,8 +16,10 @@
 
 package com.agapsys.sevlet.test;
 
+import com.agapsys.sevlet.test.HttpRequest.HttpHeader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jetty.server.Handler;
@@ -193,13 +195,41 @@ public class ServletContainer {
 		if (request == null)
 			throw new IllegalArgumentException("Null request");
 		
+		List<HttpHeader> defaultHeaders = client.getDefaultHeaders();
+		List<HttpHeader> requestHeaders = request.getHeaders();
+		
+		if (!defaultHeaders.isEmpty()) {
+			// Adds default headers...
+			request.clearHeaders();
+			
+			for (HttpHeader header : defaultHeaders) {
+				request.addHeaders(header);
+			}
+			
+			for (HttpHeader header : requestHeaders) {
+				request.addHeaders(header);
+			}
+		}
+		
 		request.beforeSend();
 		
+		HttpResponse resp;
 		try {
-			return new HttpResponse(client.getCoreClient().execute(request.getCoreRequest()));
+			resp = new HttpResponse(client.getCoreClient().execute(request.getCoreRequest()));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+		
+		if (!defaultHeaders.isEmpty()) {
+			// Restore request headers...
+			request.clearHeaders();
+			
+			for (HttpHeader header : requestHeaders) {
+				request.addHeaders(header);
+			}
+		}
+		
+		return resp;
 	}
 	
 	/** 

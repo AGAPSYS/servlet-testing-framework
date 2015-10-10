@@ -21,6 +21,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import org.apache.http.Header;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -151,15 +153,15 @@ public abstract class HttpRequest {
 	}
 
 	/** @return All headers associated to this request. */
-	public Set<HttpHeader> getHeaders() {
-		Set<HttpHeader> headerSet = new LinkedHashSet<>();
+	public List<HttpHeader> getHeaders() {
+		List<HttpHeader> headerList = new LinkedList<>();
 		
 		Header[] headers = getCoreRequest().getAllHeaders();
 		for (Header header : headers) {
-			headerSet.add(new HttpHeader(header.getName(), header.getValue()));
+			headerList.add(new HttpHeader(header.getName(), header.getValue()));
 		}
 		
-		return Collections.unmodifiableSet(headerSet);
+		return headerList;
 	}
 	
 	/**
@@ -168,18 +170,18 @@ public abstract class HttpRequest {
 	 * @return All registered headers with given name. If there are no such headers, an empty set is returned
 	 * @throws IllegalArgumentException if name is null or empty
 	 */
-	public Set<HttpHeader> getHeaders(String name) throws IllegalArgumentException {
+	public List<HttpHeader> getHeaders(String name) throws IllegalArgumentException {
 		if (name == null || name.isEmpty())
 			throw new IllegalArgumentException("Null/Empty name");
 		
-		Set<HttpHeader> headerSet = new LinkedHashSet<>();
+		List<HttpHeader> headerList = new LinkedList<>();
 		
 		Header[] headers = getCoreRequest().getHeaders(name);
 		for (Header header : headers) {
-			headerSet.add(new HttpHeader(header.getName(), header.getValue()));
+			headerList.add(new HttpHeader(header.getName(), header.getValue()));
 		}
 		
-		return Collections.unmodifiableSet(headerSet);
+		return headerList;
 	}
 	
 	/**

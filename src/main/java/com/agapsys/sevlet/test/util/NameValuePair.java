@@ -37,5 +37,5 @@ public class NameValuePair extends Pair<String, String> {
 
 	public String getValue() {
 		return super.getSecond();
-	}
+	}	
 }
