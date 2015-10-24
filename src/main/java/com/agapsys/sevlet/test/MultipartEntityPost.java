@@ -25,10 +25,10 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
 
-public class MultipartPost extends HttpEntityRequest {
+public class MultipartEntityPost extends HttpEntityRequest {
 	private final Map<String, ContentBody> contentBodyMap = new LinkedHashMap<>();
 
-	public MultipartPost(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
+	public MultipartEntityPost(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
 		super(servletContainer, uri);
 	}
 

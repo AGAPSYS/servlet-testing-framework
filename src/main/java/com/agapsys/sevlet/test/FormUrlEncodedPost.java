@@ -25,7 +25,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.message.BasicNameValuePair;
 
 public class FormUrlEncodedPost extends HttpEntityRequest {
