@@ -19,11 +19,8 @@ package com.agapsys.sevlet.test;
 import com.agapsys.sevlet.test.util.NameValuePair;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import org.apache.http.Header;
 import org.apache.http.client.methods.HttpRequestBase;
 
