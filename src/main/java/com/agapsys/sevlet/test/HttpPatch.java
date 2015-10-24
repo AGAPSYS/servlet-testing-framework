@@ -25,7 +25,7 @@ public class HttpPatch extends StringEntityRequest {
 	}
 
 	@Override
-	HttpRequestBase getCoreRequest(String uri) {
+	protected HttpRequestBase getCoreRequest(String uri) {
 		return new org.apache.http.client.methods.HttpPatch(uri);
 	}
 }

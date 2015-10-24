@@ -25,7 +25,7 @@ public class HttpPost extends StringEntityRequest {
 	}
 
 	@Override
-	HttpRequestBase getCoreRequest(String uri) {
+	protected HttpRequestBase getCoreRequest(String uri) {
 		return new org.apache.http.client.methods.HttpPost(uri);
 	}
 }

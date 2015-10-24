@@ -27,7 +27,7 @@ public abstract class HttpEntityRequest extends HttpRequest {
 	protected abstract HttpEntity getEntity();
 	
 	@Override
-	final void beforeSend() {
+	protected final void beforeSend() {
 		((HttpEntityEnclosingRequestBase)getCoreRequest()).setEntity(getEntity());
 	}
 }

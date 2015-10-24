@@ -71,10 +71,10 @@ public abstract class HttpRequest {
 		this.uri = uri;
 	}
 	
-	abstract HttpRequestBase getCoreRequest(String uri);
+	protected abstract HttpRequestBase getCoreRequest(String uri);
 	
 	/** Returns wrapped {@linkplain HttpRequestBase}. */
-	final HttpRequestBase getCoreRequest() {
+	protected final HttpRequestBase getCoreRequest() {
 		if (coreRequest == null) {
 			String fullUrl = String.format("http://localhost:%d%s", servletContainter.getLocalPort(), getUri());
 			coreRequest = getCoreRequest(fullUrl);
@@ -84,7 +84,7 @@ public abstract class HttpRequest {
 	}
 		
 	/** Performs required actions with wrapped {@linkplain HttpRequestBase}. */
-	void beforeSend() {
+	protected void beforeSend() {
 		try {
 			getCoreRequest().setURI(new URI(String.format("http://localhost:%d%s", servletContainter.getLocalPort(), getUri())));
 		} catch (URISyntaxException ex) {

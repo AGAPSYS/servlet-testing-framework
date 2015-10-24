@@ -25,7 +25,7 @@ public class HttpGet extends HttpRequest {
 	}
 	
 	@Override
-	HttpRequestBase getCoreRequest(String uri) {
+	protected HttpRequestBase getCoreRequest(String uri) {
 		return  new org.apache.http.client.methods.HttpGet(uri);
 	}
 }
