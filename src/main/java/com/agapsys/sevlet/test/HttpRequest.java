@@ -65,8 +65,9 @@ public abstract class HttpRequest {
 		if (uri == null || uri.isEmpty())
 			throw new IllegalArgumentException("Null/Empty uri");
 		
-		if (uri.contains(":") || uri.contains(" ") || !uri.startsWith("/"))
+		if (uri.contains(":") || uri.contains(" ") || !uri.startsWith("/")) {
 			throw new IllegalArgumentException("Invalid uri: " + uri);
+		}
 		
 		this.uri = uri;
 	}

@@ -48,6 +48,6 @@ public class HttpRequestTest {
 	
 	@Test
 	public void testValidPostUri() {
-		new HttpStringEntityPost(sc, "/context");
+		new StringEntityPost(sc, "/context");
 	}
 }
