@@ -50,7 +50,7 @@ public class FormUrlEncodedPost extends HttpEntityRequest {
 	}
 
 	@Override
-	protected HttpEntity getEntity() {
+	protected final HttpEntity getEntity() {
 		List<NameValuePair> urlParameters = new ArrayList<>();
 		for (Map.Entry<String, String> entry : params.entrySet()) {
 			urlParameters.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
@@ -61,6 +61,6 @@ public class FormUrlEncodedPost extends HttpEntityRequest {
 	
 	@Override
 	protected HttpRequestBase getCoreRequest(String uri) {
-		return new org.apache.http.client.methods.HttpPost(getUri());
+		return new org.apache.http.client.methods.HttpPost(uri);
 	}
 }

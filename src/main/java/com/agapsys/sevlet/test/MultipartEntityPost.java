@@ -55,7 +55,7 @@ public class MultipartEntityPost extends HttpEntityRequest {
 	}
 	
 	@Override
-	protected HttpEntity getEntity() {
+	protected final HttpEntity getEntity() {
 		MultipartEntity entity = new MultipartEntity();
 		for (Map.Entry<String, ContentBody> entry : contentBodyMap.entrySet()) {
 			String name = entry.getKey();
@@ -68,6 +68,6 @@ public class MultipartEntityPost extends HttpEntityRequest {
 	
 	@Override
 	protected HttpRequestBase getCoreRequest(String uri) {
-		return new org.apache.http.client.methods.HttpPost(getUri());
+		return new org.apache.http.client.methods.HttpPost(uri);
 	}
 }
