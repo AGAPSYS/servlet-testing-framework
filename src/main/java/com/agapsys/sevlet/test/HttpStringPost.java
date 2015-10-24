@@ -19,8 +19,8 @@ package com.agapsys.sevlet.test;
 import org.apache.http.client.methods.HttpRequestBase;
 
 /** Represents a HTTP 'POST' request. */
-public class HttpPost extends StringEntityRequest {
-	public HttpPost(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
+public class HttpStringPost extends StringEntityRequest {
+	public HttpStringPost(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
 		super(servletContainer, uri);
 	}
 

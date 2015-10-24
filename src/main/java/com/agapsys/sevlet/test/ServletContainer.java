@@ -290,23 +290,23 @@ public class ServletContainer {
 	/**
 	 * Performs a POST request to this server
 	 * @param client {@linkplain HttpClient} instance
-	 * @param request {@linkplain HttpPost POST request} instance
+	 * @param request{@link HttpStringPost POST request} instance
 	 * @return server {@link HttpResponse response}
 	 * @throws IllegalArgumentException if client == null or request == null
 	 * @throws RuntimeException if request fails
 	 */
-	public HttpResponse doPost(HttpClient client, HttpPost request) throws IllegalArgumentException, RuntimeException {
+	public HttpResponse doPost(HttpClient client, HttpStringPost request) throws IllegalArgumentException, RuntimeException {
 		return doRequest(client, request);
 	}
 
 	/**
 	 * Performs a POST request to this server
-	 * @param request {@linkplain HttpPost POST request} instance
+	 * @param request{@link HttpStringPost POST request} instance
 	 * @return server {@link HttpResponse response}
 	 * @throws IllegalArgumentException if request == null
 	 * @throws RuntimeException if request fails
 	 */
-	public HttpResponse doPost(HttpPost request) throws IllegalArgumentException, RuntimeException {
+	public HttpResponse doPost(HttpStringPost request) throws IllegalArgumentException, RuntimeException {
 		return doRequest(request);
 	}
 
