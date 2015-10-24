@@ -46,6 +46,14 @@ public class MultipartPost extends HttpEntityRequest {
 		addPart(name, body);
 	}
 	
+	public void addFile(File file) {
+		addFile(file.getName(), file);
+	}
+	
+	public void addFile(File file, String contentType) {
+		addFile(file.getName(), file, contentType);
+	}
+	
 	@Override
 	protected HttpEntity getEntity() {
 		MultipartEntity entity = new MultipartEntity();
