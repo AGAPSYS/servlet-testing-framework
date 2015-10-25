@@ -21,49 +21,45 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 
 public class MultipartEntityPost extends HttpEntityRequest {
-	private final Map<String, ContentBody> contentBodyMap = new LinkedHashMap<>();
+	private final MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
 	public MultipartEntityPost(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
 		super(servletContainer, uri);
 	}
 
-	private void addPart(String name, ContentBody body) {
-		if (contentBodyMap.put(name, body) != null) throw new RuntimeException("Duplicate name: " + name);
-	}
-	
-	public void addFile(String name, File file, String contentType) {
-		FileBody body = new FileBody(file, contentType);
-		addPart(name, body);
+	public void addFile(String name, File file, String mimeType) {
+		builder.addBinaryBody(name, file, ContentType.create(mimeType), name);
 	}
 	
 	public void addFile(String name, File file) {
-		FileBody body = new FileBody(file);
-		addPart(name, body);
+		builder.addBinaryBody(name, file);
 	}
 	
 	public void addFile(File file) {
-		addFile(file.getName(), file);
+		builder.addBinaryBody(file.getName(), file);
 	}
 	
 	public void addFile(File file, String contentType) {
 		addFile(file.getName(), file, contentType);
 	}
 	
+	public void addString(String name, String value) {
+		builder.addTextBody(name, value);
+	}
+	
+	public void addString(String name, String value, String mimeType) {
+		builder.addTextBody(name, value, ContentType.create(mimeType));
+	}
+	
 	@Override
 	protected final HttpEntity getEntity() {
-		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-		
-		for (Map.Entry<String, ContentBody> entry : contentBodyMap.entrySet()) {
-			String name = entry.getKey();
-			ContentBody body = entry.getValue();
-			builder.addPart(name, body);
-		}
-		
 		return builder.build();
 	}
 	
