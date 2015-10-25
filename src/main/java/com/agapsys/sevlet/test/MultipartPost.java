@@ -27,10 +27,10 @@ import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 
-public class MultipartEntityPost extends HttpEntityRequest {
+public class MultipartPost extends HttpEntityRequest {
 	private final MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
-	public MultipartEntityPost(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
+	public MultipartPost(ServletContainer servletContainer, String uri) throws IllegalArgumentException {
 		super(servletContainer, uri);
 	}
 
