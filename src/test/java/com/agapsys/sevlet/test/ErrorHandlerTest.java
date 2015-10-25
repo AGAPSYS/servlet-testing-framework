@@ -45,7 +45,7 @@ public class ErrorHandlerTest {
 		
 		sc.startServer();
 				
-		HttpResponse resp = sc.doGet(ExceptionServlet.URL);
+		HttpResponse resp = sc.doRequest(new HttpGet(sc, ExceptionServlet.URL));
 		assertEquals(ErrorPage.RESPONSE_MESSAGE, resp.getResponseBody());
 	}
 	
@@ -61,7 +61,7 @@ public class ErrorHandlerTest {
 		
 		sc.startServer();
 				
-		HttpResponse resp = sc.doGet(ExceptionServlet.URL);
+		HttpResponse resp = sc.doRequest(new HttpGet(sc, ExceptionServlet.URL));
 		String responseBody = resp.getResponseBody();
 		assertTrue(responseBody.startsWith("java.lang.RuntimeException"));
 	}

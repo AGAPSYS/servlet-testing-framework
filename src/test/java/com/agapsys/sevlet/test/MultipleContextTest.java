@@ -66,10 +66,10 @@ public class MultipleContextTest {
 	public void test() {
 		HttpResponse resp;
 		
-		resp = sc.doGet("/context1/test");
+		resp = sc.doRequest(new HttpGet(sc, "/context1/test"));
 		Assert.assertEquals("test", resp.getResponseBody());
 		
-		resp = sc.doGet("/context2/test");
+		resp = sc.doRequest(new HttpGet(sc, "/context2/test"));
 		Assert.assertEquals("test", resp.getResponseBody());
 	}
 	// =========================================================================

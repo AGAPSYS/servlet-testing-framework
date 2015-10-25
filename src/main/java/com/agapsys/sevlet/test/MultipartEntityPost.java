@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;

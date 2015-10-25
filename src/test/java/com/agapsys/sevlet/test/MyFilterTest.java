@@ -50,7 +50,7 @@ public class MyFilterTest {
 	public void testFilterIntercept() throws IOException {
 		String testUrl = CONTEXT + MyServlet.URL1;
 		
-		HttpResponse response = sc.doGet(new HttpGet(sc, testUrl));
+		HttpResponse response = sc.doRequest(new HttpGet(sc, testUrl));
 		assertEquals(response.getStatusCode(), 200);
 
 		String responseStr = response.getResponseBody();
