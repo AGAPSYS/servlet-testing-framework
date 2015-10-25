@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServlet;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -63,6 +64,24 @@ public class ServletContainer {
 		@Override public void ignore(Throwable ignored) { }
 		@Override public void debug(String arg0, long arg1) { }
 		// =====================================================================
+	}
+
+	/** 
+	 * Convenience method to create a container having only Servlets
+	 * @param servlets servlets registered with the root context
+	 * @return Servlet container with a root application having only given servlets
+	 */
+	public static ServletContainer getInstance(Class<? extends HttpServlet>...servlets) {
+		if (servlets.length == 0) throw new IllegalArgumentException("Missing servlets");
+		
+		ApplicationContext context = new ApplicationContext();
+		for (Class<? extends HttpServlet> servletClass : servlets) {
+			context.registerServlet(servletClass);
+		}
+		
+		ServletContainer sc = new ServletContainer();
+		sc.registerContext(context);
+		return sc;
 	}
 	
 	static {
