@@ -16,6 +16,8 @@
 
 package com.agapsys.sevlet.test;
 
+import com.agapsys.http.HttpGet;
+import com.agapsys.http.HttpResponse;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -64,13 +66,13 @@ public class MultipleContextTest {
 	
 	@Test
 	public void test() {
-		HttpResponse resp;
+		HttpResponse.StringResponse resp;
 		
-		resp = sc.doRequest(new HttpGet(sc, "/context1/test"));
-		Assert.assertEquals("test", resp.getResponseBody());
+		resp = sc.doRequest(new HttpGet("/context1/test"));
+		Assert.assertEquals("test", resp.getContentString());
 		
-		resp = sc.doRequest(new HttpGet(sc, "/context2/test"));
-		Assert.assertEquals("test", resp.getResponseBody());
+		resp = sc.doRequest(new HttpGet("/context2/test"));
+		Assert.assertEquals("test", resp.getContentString());
 	}
 	// =========================================================================
 }

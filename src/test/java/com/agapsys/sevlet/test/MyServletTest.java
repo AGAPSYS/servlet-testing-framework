@@ -16,6 +16,8 @@
 
 package com.agapsys.sevlet.test;
 
+import com.agapsys.http.HttpGet;
+import com.agapsys.http.HttpResponse.StringResponse;
 import com.agapsys.sevlet.test.utils.MyServlet;
 import java.io.IOException;
 import org.junit.After;
@@ -48,10 +50,10 @@ public class MyServletTest {
 	public void testServletResponse() throws IOException {
 		String testUrl = CONTEXT + MyServlet.URL1;
 		
-		HttpResponse response = sc.doRequest(new HttpGet(sc, testUrl));
+		StringResponse response = sc.doRequest(new HttpGet(testUrl));
 		assertEquals(response.getStatusCode(), 200);
 
-		String responseStr = response.getResponseBody();
+		String responseStr = response.getContentString();
 
 		assertEquals(responseStr, MyServlet.URL1);
 		

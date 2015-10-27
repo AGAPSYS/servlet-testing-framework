@@ -16,6 +16,9 @@
 
 package com.agapsys.sevlet.test;
 
+import com.agapsys.http.HttpGet;
+import com.agapsys.http.HttpResponse;
+import com.agapsys.http.HttpResponse.StringResponse;
 import com.agapsys.sevlet.test.utils.ErrorPage;
 import com.agapsys.sevlet.test.utils.ExceptionServlet;
 import org.junit.After;
@@ -45,8 +48,8 @@ public class ErrorHandlerTest {
 		
 		sc.startServer();
 				
-		HttpResponse resp = sc.doRequest(new HttpGet(sc, ExceptionServlet.URL));
-		assertEquals(ErrorPage.RESPONSE_MESSAGE, resp.getResponseBody());
+		StringResponse resp = sc.doRequest(new HttpGet(ExceptionServlet.URL));
+		assertEquals(ErrorPage.RESPONSE_MESSAGE, resp.getContentString());
 	}
 	
 	@Test
@@ -61,8 +64,8 @@ public class ErrorHandlerTest {
 		
 		sc.startServer();
 				
-		HttpResponse resp = sc.doRequest(new HttpGet(sc, ExceptionServlet.URL));
-		String responseBody = resp.getResponseBody();
-		assertTrue(responseBody.startsWith("java.lang.RuntimeException"));
+		StringResponse resp = sc.doRequest(new HttpGet(ExceptionServlet.URL));
+		String content = resp.getContentString();
+		assertTrue(content.startsWith("java.lang.RuntimeException"));
 	}
 }

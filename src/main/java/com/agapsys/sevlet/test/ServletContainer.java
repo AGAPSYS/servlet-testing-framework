@@ -16,10 +16,12 @@
 
 package com.agapsys.sevlet.test;
 
-import com.agapsys.sevlet.test.HttpRequest.HttpHeader;
+import com.agapsys.http.HttpClient;
+import com.agapsys.http.HttpRequest;
+import com.agapsys.http.HttpResponse;
+import com.agapsys.http.HttpResponse.StringResponse;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServlet;
 
@@ -67,7 +69,7 @@ public class ServletContainer {
 	}
 
 	/** 
-	 * Convenience method to create a container having only Servlets
+	 * Convenience method to create a container having only servlets.
 	 * @param servlets servlets registered with the root context
 	 * @return Servlet container with a root application having only given servlets
 	 */
@@ -107,10 +109,10 @@ public class ServletContainer {
 	}
 	
 	/** 
-	 * @return the local TCP port used by the server
-	 * @throws IllegalStateException if server is not running
+	 * Returns the local TCP port used by the server.
+	 * @return the local TCP port used by the server.
 	 */
-	public int getLocalPort() throws IllegalStateException {
+	public int getLocalPort() {
 		if (!isRunning())
 			throw new IllegalStateException("Server is not running");
 		
@@ -121,14 +123,8 @@ public class ServletContainer {
 	 * Register an application {@link ApplicationContext context}
 	 * @param context application context
 	 * @param contextPath associated URL
-	 * @throws IllegalArgumentException if any of the following conditions occurs:
-	 * <ul>
-	 *		<li>contextPath == null || contextPath.isEmpty()</li>
-	 *		<li>context == null</li>
-	 *		<li>contextPath is already registered</li>
-	 * </ul>
 	 */
-	public void registerContext(ApplicationContext context, String contextPath) throws IllegalArgumentException {
+	public void registerContext(ApplicationContext context, String contextPath) {
 		if (contextPath == null || contextPath.isEmpty())
 			throw new IllegalArgumentException("Null/empty contextPath");
 		
@@ -145,17 +141,13 @@ public class ServletContainer {
 	/**
 	 * Registers an application in root contextPath
 	 * @param context application context
-	 * @throws IllegalArgumentException if context == null
 	 */
-	public void registerContext(ApplicationContext context) throws IllegalArgumentException {
+	public void registerContext(ApplicationContext context) {
 		registerContext(context, "/");
 	}
 	
-	/**
-	 * Starts server
-	 * @throws RuntimeException if server fails to start
-	 */
-	public void startServer() throws RuntimeException {
+	/**  Starts server. */
+	public void startServer() {
 		// Register contexts with the server...
 		for(Map.Entry<String, ApplicationContext> entry : contextMap.entrySet()) {
 			
@@ -182,11 +174,8 @@ public class ServletContainer {
 		}
 	}
 	
-	/** 
-	 * Stops the server.
-	 * @throws RuntimeException if server fails to stop
-	 */
-	public void stopServer() throws RuntimeException{
+	/** Stops the server. */
+	public void stopServer() {
 		try {
 			server.stop();
 		} catch (Exception e) {
@@ -194,72 +183,59 @@ public class ServletContainer {
 		}
 	}
 	
-	/** @return a boolean indicating if server is running. */
+	/**
+	 * Returns a boolean indicating if server is running.
+	 * @return a boolean indicating if server is running.
+	 */
 	public boolean isRunning() {
 		return server.isRunning();
 	}
 	
 	/**
-	 * Generic request method when a client instance is available
+	 * Perform a request against this servlet container.
 	 * @param client {@linkplain HttpClient} instance
 	 * @param request {@linkplain HttpRequest} instance
 	 * @return response
-	 * @throws IllegalArgumentException if client == null  or request == null
-	 * @throws RuntimeException if request fails
 	 */
-	public HttpResponse doRequest(HttpClient client, HttpRequest request) throws IllegalArgumentException, RuntimeException {
-		if (client == null)
-			throw new IllegalArgumentException("Null client");
+	public StringResponse doRequest(HttpClient client, HttpRequest request) {
+		// Change URI to use servlet container
+		String oldUri = request.getUri();
 		
-		if (request == null)
-			throw new IllegalArgumentException("Null request");
+		if (oldUri == null || oldUri.isEmpty())
+			throw new IllegalArgumentException("Null/Empty uri");
 		
-		List<HttpHeader> defaultHeaders = client.getDefaultHeaders();
-		List<HttpHeader> requestHeaders = request.getHeaders();
+		if (oldUri.contains(":") || oldUri.contains(" ") || !oldUri.startsWith("/"))
+			throw new IllegalArgumentException("Invalid uri: " + oldUri);
 		
-		if (!defaultHeaders.isEmpty()) {
-			// Adds default headers...
-			request.clearHeaders();
-			
-			for (HttpHeader header : defaultHeaders) {
-				request.addHeaders(header);
-			}
-			
-			for (HttpHeader header : requestHeaders) {
-				request.addHeaders(header);
-			}
-		}
+		request.setUri(String.format("http://localhost:%d%s", getLocalPort(), oldUri));
 		
-		request.beforeSend();
-		
-		HttpResponse resp;
+		StringResponse resp;
 		try {
-			resp = new HttpResponse(client.getCoreClient().execute(request.getCoreRequest()));
+			resp = HttpResponse.getStringResponse(client, request, "utf-8", -1);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 		
-		if (!defaultHeaders.isEmpty()) {
-			// Restore request headers...
-			request.clearHeaders();
-			
-			for (HttpHeader header : requestHeaders) {
-				request.addHeaders(header);
-			}
-		}
+		// Restore servlet URI
+		request.setUri(oldUri);
 		
 		return resp;
 	}
 	
 	/** 
-	 * Generic request method
+	 * Perform a request against this servlet container.
 	 * @param request {@linkplain HttpRequest} instance
 	 * @return response
-	 * @throws RuntimeException if request fails
 	 */
-	public HttpResponse doRequest(HttpRequest request) throws RuntimeException {
-		HttpClient httpclient = new HttpClient();
-		return doRequest(httpclient, request);
+	public StringResponse doRequest(HttpRequest request) {
+		try {
+			HttpClient client = new HttpClient();
+			StringResponse response = doRequest(client, request);
+			client.close();
+			return response;
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 	// =========================================================================
 }

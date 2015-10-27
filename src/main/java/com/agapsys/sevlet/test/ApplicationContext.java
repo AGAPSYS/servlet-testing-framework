@@ -142,7 +142,7 @@ public class ApplicationContext  {
 	}
 	
 	/** @return returns wrapped context handler */
-	ServletContextHandler getContextHandler() {
+	protected ServletContextHandler getContextHandler() {
 		return contextHandler;
 	}
 	// =========================================================================
