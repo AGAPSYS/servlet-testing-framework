@@ -63,7 +63,7 @@ public class ApplicationContext  {
 		WebFilter[] annotations = filterClass.getAnnotationsByType(WebFilter.class);
 		
 		if (annotations.length == 0)
-			throw new IllegalArgumentException("Servlet class does not have a WebFilter annotation");
+			throw new IllegalArgumentException("Filter class does not have a WebFilter annotation");
 		
 		for (WebFilter annotation : annotations) {
 			String[] urlPatterns = annotation.value();
