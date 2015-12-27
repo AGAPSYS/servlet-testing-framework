@@ -17,14 +17,13 @@
 package com.agapsys.sevlet.test;
 
 import com.agapsys.http.HttpGet;
-import com.agapsys.http.HttpResponse;
 import com.agapsys.http.HttpResponse.StringResponse;
 import com.agapsys.sevlet.test.utils.ErrorPage;
 import com.agapsys.sevlet.test.utils.ExceptionServlet;
 import org.junit.After;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class ErrorHandlerTest {
 	private ServletContainer sc;

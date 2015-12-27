@@ -13,49 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.agapsys.sevlet.test;
 
 import com.agapsys.http.HttpGet;
-import com.agapsys.http.HttpResponse.StringResponse;
+import com.agapsys.http.HttpResponse;
 import com.agapsys.sevlet.test.utils.MyServlet;
-import java.io.IOException;
-import org.junit.After;
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
 import org.junit.Test;
 
-public class MyServletTest {
-	private static final String CONTEXT = "/context";
-	
-	private ServletContainer sc;
-	
-	@Before
-	public void setUp() {
-		sc = new ServletContainer();
-		
-		ApplicationContext context = new ApplicationContext();
-		context.registerServlet(MyServlet.class);
-		
-		sc.registerContext(context, CONTEXT);
-		sc.startServer();
-	}
-	
-	@After
-	public void tearDown() {
-		sc.stopServer();
-	}
+/**
+ *
+ * @author leandro-agapsys
+ */
+public class ServletContainerBuilderTest {
 
 	@Test
-	public void testServletResponse() throws IOException {
-		String testUrl = CONTEXT + MyServlet.URL1;
+	public void testBuilder() {
+		ServletContainer sc = new ServletContainerBuilder().registerServlet(MyServlet.class).build();
+		sc.startServer();
 		
-		StringResponse response = sc.doRequest(new HttpGet(testUrl));
-		assertEquals(response.getStatusCode(), 200);
+		String testUrl = MyServlet.URL1;
+		
+		HttpResponse.StringResponse response = sc.doRequest(new HttpGet(testUrl));
+		assertEquals(200, response.getStatusCode());
 
 		String responseStr = response.getContentString();
 
 		assertEquals(responseStr, MyServlet.URL1);
 		
+		sc.stopServer();		
 	}
 }
