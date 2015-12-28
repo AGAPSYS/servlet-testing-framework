@@ -15,96 +15,77 @@
  */
 package com.agapsys.sevlet.test;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.EventListener;
-import javax.servlet.Filter;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.servlet.http.HttpServlet;
-import org.eclipse.jetty.server.handler.ErrorHandler;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 
 /**
  *
  * @author leandro-agapsys
  */
 public class ServletContainerBuilder {
+
 	// CLASS SCOPE =============================================================
-	private static <T extends EventListener> T getEventListenerInstance(Class<T> eventListenerClass) {
-		try {
-			return eventListenerClass.getConstructor().newInstance();
-		} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-			throw new RuntimeException(ex);
+	private static final String ROOT_PATH = "/";
+	
+	public static ServletContainer getServletContainer(Class<? extends HttpServlet>...servletClasses) {
+		ServletContextHandlerBuilder contextBuilder = new ServletContainerBuilder().addRootContext();
+		for (Class<? extends HttpServlet> servletClass : servletClasses) {
+			contextBuilder.registerServlet(servletClass);
 		}
+		return contextBuilder.endContext().build();
 	}
 	// =========================================================================
 
 	// INSTANCE SCOPE ==========================================================
-	private final ApplicationContext ctx = new ApplicationContext();
-	
-	private ErrorHandler errorHandler = null;
+	final Map<String, ServletContextHandlerBuilder> contextBuilders = new LinkedHashMap<>();
 
-
-	public ServletContainerBuilder registerEventListener(Class<? extends EventListener>...eventListenerClasses) {
-		for (Class<? extends EventListener> eventListenerClass : eventListenerClasses) {
-			ctx.registerEventListener(getEventListenerInstance(eventListenerClass));
-		}
-		
-		return this;
-	}
-	
-	public ServletContainerBuilder registerEventListener(EventListener listener) {
-		ctx.registerEventListener(listener);
-		return this;
+	public ServletContextHandlerBuilder addRootContext() {
+		return addContext(ROOT_PATH);
 	}
 
-	
-	public ServletContainerBuilder registerFilter(Class<? extends Filter> filterClass, String urlPattern) {
-		ctx.registerFilter(filterClass, urlPattern);
-		ctx.registerEventListener(null);
-		return this;
-	}
-	
-	public ServletContainerBuilder registerFilters(Class<? extends Filter>...filterClasses) {
-		for (Class<? extends Filter> filterClass : filterClasses) {
-			ctx.registerFilter(filterClass);
-		}
-		
-		return this;
-	}
-	
-	
-	public ServletContainerBuilder registerServlet(Class<? extends HttpServlet>...servlets) {
-		for (Class<? extends HttpServlet> servlet : servlets) {
-			ctx.registerServlet(servlet);
+	public ServletContextHandlerBuilder addContext(String contextPath) {
+		if (contextPath == null)
+			throw new IllegalArgumentException("Null context path");
+
+		contextPath = contextPath.trim();
+
+		if (!contextPath.startsWith("/")) {
+			contextPath = "/" + contextPath;
 		}
 
-		return this;
-	}
-	
-	public ServletContainerBuilder registerServlet(Class<? extends HttpServlet> servlet, String urlPattern) {
-		ctx.registerServlet(servlet, urlPattern);
-		return this;
+		if (contextBuilders.containsKey(contextPath)) {
+			throw new IllegalStateException("Context already defined: " + contextPath);
+		}
+
+		contextBuilders.put(contextPath, null);
+		return new ServletContextHandlerBuilder(this, contextPath);
 	}
 
-	
-	public ServletContainerBuilder setErrorHandler(ErrorHandler errorHandler) {
-		if (errorHandler == null)
-			throw new IllegalArgumentException("Null error handler");
-		
-		if (this.errorHandler != null)
-			throw new IllegalStateException("Error handler is already set");
-		
-		this.errorHandler = errorHandler;
-		
-		return this;
-	}
-	
 	public ServletContainer build() {
-		ServletContainer sc = new ServletContainer();
+
+		Server server = new Server(0);
 		
-		if (errorHandler != null)
-			ctx.setErrorHandler(errorHandler);
+		Handler[] handlers = new Handler[contextBuilders.size()];
 		
-		sc.registerContext(ctx);
-		return sc;
+		int i = 0;
+		for (Map.Entry<String, ServletContextHandlerBuilder> entry : contextBuilders.entrySet()) {
+			ServletContextHandler servletContextHandler = entry.getValue().build();
+			servletContextHandler.setContextPath(entry.getKey());
+			handlers[i] = servletContextHandler;
+			i++;
+		}
+		
+		ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();
+		contextHandlerCollection.setHandlers(handlers);
+		
+		server.setHandler(contextHandlerCollection);
+
+		return new ServletContainer(server);
 	}
 	// =========================================================================
 }

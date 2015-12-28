@@ -46,16 +46,15 @@ public class MultipleContextTest {
 	
 	@Before
 	public void before() {
-		ApplicationContext context1 = new ApplicationContext();
-		context1.registerServlet(Test1Servlet.class);
-		
-		ApplicationContext context2 = new ApplicationContext();
-		context2.registerServlet(Test1Servlet.class);
-		
-		sc = new ServletContainer();
-		sc.registerContext(context1, "/context1");
-		sc.registerContext(context2, "/context2");
-		
+		sc = new ServletContainerBuilder()
+			.addContext("/context1")
+				.registerServlet(Test1Servlet.class)
+			.endContext()
+			.addContext("/context2")
+				.registerServlet(Test1Servlet.class)
+			.endContext()
+			.build();
+				
 		sc.startServer();
 	}
 	

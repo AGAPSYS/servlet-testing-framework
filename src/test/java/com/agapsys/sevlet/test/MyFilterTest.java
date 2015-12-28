@@ -18,13 +18,13 @@ package com.agapsys.sevlet.test;
 
 import com.agapsys.http.HttpGet;
 import com.agapsys.http.HttpResponse.StringResponse;
-import com.agapsys.sevlet.test.utils.MyServlet;
 import com.agapsys.sevlet.test.utils.MyFilter;
+import com.agapsys.sevlet.test.utils.MyServlet;
 import java.io.IOException;
 import org.junit.After;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class MyFilterTest {
 	private static final String CONTEXT = "/context";
@@ -33,13 +33,13 @@ public class MyFilterTest {
 	
 	@Before
 	public void setUp() {
-		sc = new ServletContainer();
+		sc = new ServletContainerBuilder()
+			.addContext(CONTEXT)
+				.registerServlet(MyServlet.class)
+				.registerFilter(MyFilter.class)
+			.endContext()
+			.build();
 		
-		ApplicationContext context = new ApplicationContext();
-		context.registerServlet(MyServlet.class);
-		context.registerFilter(MyFilter.class);
-		
-		sc.registerContext(context, CONTEXT);
 		sc.startServer();
 	}
 	

@@ -32,12 +32,12 @@ public class MyServletTest {
 	
 	@Before
 	public void setUp() {
-		sc = new ServletContainer();
+		sc = new ServletContainerBuilder()
+			.addContext(CONTEXT)
+				.registerServlet(MyServlet.class)
+			.endContext()
+			.build();
 		
-		ApplicationContext context = new ApplicationContext();
-		context.registerServlet(MyServlet.class);
-		
-		sc.registerContext(context, CONTEXT);
 		sc.startServer();
 	}
 	

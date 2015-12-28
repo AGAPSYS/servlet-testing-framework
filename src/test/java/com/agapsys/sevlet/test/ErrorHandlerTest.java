@@ -36,14 +36,13 @@ public class ErrorHandlerTest {
 	
 	@Test
 	public void testErrorPage() {
-		sc = new ServletContainer();
-		
-		ApplicationContext context = new ApplicationContext();
-		context.registerServlet(ExceptionServlet.class);
-		context.registerServlet(ErrorPage.class);
-		
-		context.registerErrorPage(500, ErrorPage.URL);
-		sc.registerContext(context, "/");
+		sc = new ServletContainerBuilder()
+			.addRootContext()
+				.registerServlet(ExceptionServlet.class)
+				.registerServlet(ErrorPage.class)
+				.registerErrorPage(500, ErrorPage.URL)
+			.endContext()
+			.build();
 		
 		sc.startServer();
 				
@@ -53,13 +52,12 @@ public class ErrorHandlerTest {
 	
 	@Test
 	public void testErrorHandler() {
-		sc = new ServletContainer();
-		
-		ApplicationContext context = new ApplicationContext();
-		context.registerServlet(ExceptionServlet.class);
-		
-		context.setErrorHandler(new StacktraceErrorHandler());
-		sc.registerContext(context, "/");
+		sc = new ServletContainerBuilder()
+			.addRootContext()
+				.registerServlet(ExceptionServlet.class)
+				.setErrorHandler(new StacktraceErrorHandler())
+			.endContext()
+			.build();
 		
 		sc.startServer();
 				
