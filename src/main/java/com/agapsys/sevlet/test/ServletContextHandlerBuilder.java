@@ -184,10 +184,6 @@ public class ServletContextHandlerBuilder {
 	ServletContextHandler build() {
 		ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		
-		for (EventListener eventListener : eventListeners) {
-			servletContextHandler.addEventListener(eventListener);
-		}
-		
 		for (FilterMapping filterMapping : filterMappingList) {
 			Class<? extends Filter> filterClass = filterMapping.filterClass;
 			String urlPattern = filterMapping.urlPattern;
@@ -200,6 +196,10 @@ public class ServletContextHandlerBuilder {
 			String urlPattern = entry.getKey();
 			
 			servletContextHandler.addServlet(servletClass, urlPattern);
+		}
+		
+		for (EventListener eventListener : eventListeners) {
+			servletContextHandler.addEventListener(eventListener);
 		}
 		
 		if (errorHandler != null)
