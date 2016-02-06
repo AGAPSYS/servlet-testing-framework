@@ -20,8 +20,8 @@ limitations under the License.
     <modelVersion>4.0.0</modelVersion>
    
     <groupId>com.agapsys.libs</groupId>
-    <artifactId>servlet-testing-framework</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <artifactId>embedded-servlet-container</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 	
     <properties>
@@ -30,9 +30,9 @@ limitations under the License.
 	<maven.compiler.target>1.7</maven.compiler.target>
     </properties>
 	
-    <name>Servlet Testing Framework</name>
-    <description>A framework for servlet/filter testing</description>
-    <url>https://github.com/agapsys/servlet-testing-framework</url>
+    <name>Embedded Servlet Container</name>
+    <description>Embedded Servlet Container</description>
+    <url>https://github.com/agapsys/embedded-servlet-container</url>
 	
     <licenses>
 	<license>
@@ -51,8 +51,8 @@ limitations under the License.
     </developers>
 	
     <scm>
-	<connection>scm:git:git@github.com:agapsys/servlet-testing-framework.git</connection>
-	<url>git@github.com:agapsys/servlet-testing-framework.git</url>
+	<connection>scm:git:git@github.com:agapsys/embedded-servlet-container.git</connection>
+	<url>git@github.com:agapsys/embedded-servlet-container.git</url>
     </scm>
 	
     <organization>
