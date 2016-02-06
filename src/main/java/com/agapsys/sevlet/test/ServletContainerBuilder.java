@@ -88,6 +88,8 @@ public class ServletContainerBuilder {
 	// =========================================================================
 
 	// INSTANCE SCOPE ==========================================================
+	private Integer localPort = null;
+	
 	final Map<String, ServletContextHandlerBuilder> contextBuilders = new LinkedHashMap<>();
 
 	public ServletContextHandlerBuilder addRootContext() {
@@ -112,9 +114,23 @@ public class ServletContainerBuilder {
 		return new ServletContextHandlerBuilder(this, contextPath);
 	}
 
+	public ServletContainerBuilder setLocalPort(int localPort) {
+		if (this.localPort != null)
+			throw new IllegalStateException("Local port is already set");
+		
+		if (localPort < 1 || localPort > 65535)
+			throw new IllegalArgumentException("Invalid port: " + localPort);
+		
+		this.localPort = localPort;
+		return this;
+	}
+	
 	public ServletContainer build() {
 
-		Server server = new Server(0);
+		if (localPort == null)
+			localPort = 0;
+		
+		Server server = new Server(localPort);
 		
 		Handler[] handlers = new Handler[contextBuilders.size()];
 		
