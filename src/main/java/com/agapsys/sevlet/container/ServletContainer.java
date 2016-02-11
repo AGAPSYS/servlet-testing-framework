@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.agapsys.sevlet.test;
+package com.agapsys.sevlet.container;
 
 import com.agapsys.http.HttpClient;
 import com.agapsys.http.HttpRequest;

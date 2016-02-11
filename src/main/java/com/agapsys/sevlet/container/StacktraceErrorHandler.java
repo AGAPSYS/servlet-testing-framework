@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.agapsys.sevlet.test;
+package com.agapsys.sevlet.container;
 
 import java.io.IOException;
 import java.io.PrintWriter;

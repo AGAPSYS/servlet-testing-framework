@@ -16,6 +16,8 @@
 
 package com.agapsys.sevlet.test;
 
+import com.agapsys.sevlet.container.ServletContainerBuilder;
+import com.agapsys.sevlet.container.ServletContainer;
 import com.agapsys.http.HttpGet;
 import com.agapsys.http.HttpResponse.StringResponse;
 import com.agapsys.sevlet.test.utils.MyFilter;
