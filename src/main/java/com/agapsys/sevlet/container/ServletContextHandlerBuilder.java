@@ -68,26 +68,62 @@ public class ServletContextHandlerBuilder {
 		this.contextPath = contextPath;
 	}
 	
-	
-	public ServletContextHandlerBuilder registerEventListener(EventListener eventListener) {
+
+	/**
+	 * Registers an event listener with this context handler builder
+	 * @param eventListener event listener to be registered
+	 * @param append boolean indicating if given listener shall be appended. If false, given listener will be prepended.
+	 * @return this
+	 */
+	public ServletContextHandlerBuilder registerEventListener(EventListener eventListener, boolean append) {
 		if (eventListener == null)
 			throw new IllegalArgumentException("Event listener cannot be null");
 		
 		if (eventListeners.contains(eventListener))
 			throw new IllegalArgumentException("Event listener is already registered");
 		
-		eventListeners.add(eventListener);
+		eventListeners.add(append ? eventListeners.size() : 0, eventListener);
 		
 		return this;
 	}
 	
+	/**
+	 * Convenience method for registerEventListener(eventListener, true).
+	 * @param eventListener event listener to be registered
+	 * @return this
+	 */
+	public final ServletContextHandlerBuilder registerEventListener(EventListener eventListener) {
+		return registerEventListener(eventListener, true);
+	}
 	
-	public ServletContextHandlerBuilder registerFilter(Class<? extends Filter> filterClass, String urlPattern) {
-		filterMappingList.add(new FilterMapping(filterClass, urlPattern));
+	/**
+	 * Registers a filter with this context handler builder
+	 * @param filterClass filter class to be registered.
+	 * @param urlPattern URL pattern associated with given filter
+	 * @param append boolean indicating if given filter shall be appended. If false, given filter will be prepended.
+	 * @return this
+	 */
+	public ServletContextHandlerBuilder registerFilter(Class<? extends Filter> filterClass, String urlPattern, boolean append) {
+		filterMappingList.add(append ? filterMappingList.size() : 0, new FilterMapping(filterClass, urlPattern));
 		return this;
 	}
 	
-	public ServletContextHandlerBuilder registerFilter(Class<?extends Filter> filterClass) {
+	/**
+	 * Convenience method for registerFilter(filterClass, urlPattern, true)
+	 * @param filterClass filter class to be registered
+	 * @param urlPattern URL pattern associated with given filter
+	 * @return this
+	 */
+	public final ServletContextHandlerBuilder registerFilter(Class<? extends Filter> filterClass, String urlPattern) {
+		return registerFilter(filterClass, urlPattern, true);
+	}
+	
+	/**
+	 * Convenience method for registerFilter(filterClass).
+	 * @param filterClass filter class to be registered. Informed class must be annotated with {@linkplain WebFilter}.
+	 * @return this
+	 */
+	public final ServletContextHandlerBuilder registerFilter(Class<?extends Filter> filterClass) {
 		WebFilter[] annotations = filterClass.getAnnotationsByType(WebFilter.class);
 		
 		if (annotations.length == 0)
@@ -109,7 +145,12 @@ public class ServletContextHandlerBuilder {
 		return this;
 	}
 	
-	
+	/**
+	 * Registers a servlet with this context handler builder.
+	 * @param servletClass servlet class to be registered.
+	 * @param urlPattern URL pattern associated with given servlet
+	 * @return this
+	 */
 	public ServletContextHandlerBuilder registerServlet(Class<? extends HttpServlet> servletClass, String urlPattern) {
 		if (servletClass == null)
 			throw new IllegalArgumentException("Servlet class cannot be null");
@@ -125,7 +166,12 @@ public class ServletContextHandlerBuilder {
 		return this;
 	}
 	
-	public ServletContextHandlerBuilder registerServlet(Class<? extends HttpServlet> servletClass) {
+	/**
+	 * Convenience method for registerServlet(servletClass).
+	 * @param servletClass servlet class to be registered. Informed class must be annotated with {@linkplain WebServlet}.
+	 * @return this
+	 */
+	public final ServletContextHandlerBuilder registerServlet(Class<? extends HttpServlet> servletClass) {
 		WebServlet[] annotations = servletClass.getAnnotationsByType(WebServlet.class);
 		if (annotations.length == 0)
 			throw new IllegalArgumentException("Servlet class does not have a WebServlet annotation");
