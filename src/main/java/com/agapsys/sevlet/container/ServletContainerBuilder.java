@@ -32,7 +32,7 @@ import org.eclipse.jetty.util.log.StdErrLog;
 public class ServletContainerBuilder {
 
 	// CLASS SCOPE =============================================================
-	private static final String ROOT_PATH = "/";
+	public static final String ROOT_PATH = "/";
 	
 	private static class NoLogger implements Logger {
 		// CLASS SCOPE =========================================================
@@ -92,7 +92,11 @@ public class ServletContainerBuilder {
 	
 	final Map<String, ServletContextHandlerBuilder> contextBuilders = new LinkedHashMap<>();
 
-	public ServletContextHandlerBuilder addRootContext() {
+	/**
+	 * Convenience method for addContext(ROOT_PATH).
+	 * @return Associated ServletContextHandlerBuilder.
+	 */
+	public final ServletContextHandlerBuilder addRootContext() {
 		return addContext(ROOT_PATH);
 	}
 
