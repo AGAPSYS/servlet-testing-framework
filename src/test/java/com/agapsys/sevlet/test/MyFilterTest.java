@@ -16,10 +16,10 @@
 
 package com.agapsys.sevlet.test;
 
-import com.agapsys.sevlet.container.ServletContainerBuilder;
-import com.agapsys.sevlet.container.ServletContainer;
 import com.agapsys.http.HttpGet;
 import com.agapsys.http.HttpResponse.StringResponse;
+import com.agapsys.sevlet.container.ServletContainer;
+import com.agapsys.sevlet.container.ServletContainerBuilder;
 import com.agapsys.sevlet.test.utils.MyFilter;
 import com.agapsys.sevlet.test.utils.MyServlet;
 import java.io.IOException;
@@ -29,17 +29,15 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class MyFilterTest {
-	private static final String CONTEXT = "/context";
+	private static final String CONTEXT = "/";
 	
 	private ServletContainer sc;
 	
 	@Before
 	public void setUp() {
 		sc = new ServletContainerBuilder()
-			.addContext(CONTEXT)
-				.registerServlet(MyServlet.class)
-				.registerFilter(MyFilter.class)
-			.endContext()
+			.registerServlet(MyServlet.class)
+			.registerFilter(MyFilter.class)
 			.build();
 		
 		sc.startServer();

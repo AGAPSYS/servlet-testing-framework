@@ -16,11 +16,11 @@
 
 package com.agapsys.sevlet.test;
 
-import com.agapsys.sevlet.container.ServletContainerBuilder;
-import com.agapsys.sevlet.container.ServletContainer;
-import com.agapsys.sevlet.container.StacktraceErrorHandler;
 import com.agapsys.http.HttpGet;
 import com.agapsys.http.HttpResponse.StringResponse;
+import com.agapsys.sevlet.container.ServletContainer;
+import com.agapsys.sevlet.container.ServletContainerBuilder;
+import com.agapsys.sevlet.container.StacktraceErrorHandler;
 import com.agapsys.sevlet.test.utils.ErrorPage;
 import com.agapsys.sevlet.test.utils.ExceptionServlet;
 import org.junit.After;
@@ -40,11 +40,9 @@ public class ErrorHandlerTest {
 	@Test
 	public void testErrorPage() {
 		sc = new ServletContainerBuilder()
-			.addRootContext()
-				.registerServlet(ExceptionServlet.class)
-				.registerServlet(ErrorPage.class)
-				.registerErrorPage(500, ErrorPage.URL)
-			.endContext()
+			.registerServlet(ExceptionServlet.class)
+			.registerServlet(ErrorPage.class)
+			.registerErrorPage(500, ErrorPage.URL)
 			.build();
 		
 		sc.startServer();
@@ -56,10 +54,8 @@ public class ErrorHandlerTest {
 	@Test
 	public void testErrorHandler() {
 		sc = new ServletContainerBuilder()
-			.addRootContext()
-				.registerServlet(ExceptionServlet.class)
-				.setErrorHandler(new StacktraceErrorHandler())
-			.endContext()
+			.registerServlet(ExceptionServlet.class)
+			.setErrorHandler(new StacktraceErrorHandler())
 			.build();
 		
 		sc.startServer();

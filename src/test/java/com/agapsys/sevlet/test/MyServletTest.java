@@ -16,10 +16,10 @@
 
 package com.agapsys.sevlet.test;
 
-import com.agapsys.sevlet.container.ServletContainerBuilder;
-import com.agapsys.sevlet.container.ServletContainer;
 import com.agapsys.http.HttpGet;
 import com.agapsys.http.HttpResponse.StringResponse;
+import com.agapsys.sevlet.container.ServletContainer;
+import com.agapsys.sevlet.container.ServletContainerBuilder;
 import com.agapsys.sevlet.test.utils.MyServlet;
 import java.io.IOException;
 import org.junit.After;
@@ -28,18 +28,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class MyServletTest {
-	private static final String CONTEXT = "/context";
+	private static final String CONTEXT = "/";
 	
 	private ServletContainer sc;
 	
 	@Before
 	public void setUp() {
-		sc = new ServletContainerBuilder()
-			.addContext(CONTEXT)
-				.registerServlet(MyServlet.class)
-			.endContext()
-			.build();
-		
+		sc = ServletContainerBuilder.getServletContainer(MyServlet.class);
 		sc.startServer();
 	}
 	

@@ -38,7 +38,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 /**
  * @author Leandro Oliveira (leandro@agapsys.com)
  */
-public class ServletContextHandlerBuilder {
+class ServletContextHandlerBuilder {
 	// STATIC SCOPE =============================================================
 	private static final Map<Class, Integer> TYPE_COUNTER_MAP = new LinkedHashMap<>();
 	private static <T> Class<? extends T> getSubclass(Class<T> clazz) {

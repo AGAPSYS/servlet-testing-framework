@@ -15,12 +15,15 @@
  */
 package com.agapsys.sevlet.container;
 
+import java.util.EventListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.log.StdErrLog;
@@ -68,11 +71,11 @@ public class ServletContainerBuilder {
 	}
 	
 	public static ServletContainer getServletContainer(Class<? extends HttpServlet>...servletClasses) {
-		ServletContextHandlerBuilder contextBuilder = new ServletContainerBuilder().addRootContext();
+		ServletContainerBuilder containerBuilder = new ServletContainerBuilder();
 		for (Class<? extends HttpServlet> servletClass : servletClasses) {
-			contextBuilder.registerServlet(servletClass);
+			containerBuilder.registerServlet(servletClass);
 		}
-		return contextBuilder.endContext().build();
+		return containerBuilder.build();
 	}
 	
 	static {
@@ -88,19 +91,20 @@ public class ServletContainerBuilder {
 	// =========================================================================
 
 	// INSTANCE SCOPE ==========================================================
-	private Integer localPort = null;
-	
+	private final ServletContextHandlerBuilder contextHandlerBuilder;
 	final Map<String, ServletContextHandlerBuilder> contextBuilders = new LinkedHashMap<>();
 
-	/**
-	 * Convenience method for addContext(ROOT_PATH).
-	 * @return Associated ServletContextHandlerBuilder.
-	 */
-	public final ServletContextHandlerBuilder addRootContext() {
+	private Integer localPort = null;
+	
+	public ServletContainerBuilder() {
+		contextHandlerBuilder = addRootContext();
+	}
+	
+	private ServletContextHandlerBuilder addRootContext() {
 		return addContext(ROOT_PATH);
 	}
 
-	public ServletContextHandlerBuilder addContext(String contextPath) {
+	private ServletContextHandlerBuilder addContext(String contextPath) {
 		if (contextPath == null)
 			throw new IllegalArgumentException("Null context path");
 
@@ -118,6 +122,91 @@ public class ServletContainerBuilder {
 		return new ServletContextHandlerBuilder(this, contextPath);
 	}
 
+	/**
+	 * Registers an event listener with this context handler builder
+	 * @param eventListener event listener to be registered
+	 * @param append boolean indicating if given listener shall be appended. If false, given listener will be prepended.
+	 * @return this
+	 */
+	public ServletContainerBuilder registerEventListener(Class<? extends EventListener> eventListener, boolean append) {
+		contextHandlerBuilder.registerEventListener(eventListener, append);
+		return this;
+	}
+	
+	/**
+	 * Convenience method for registerEventListener(eventListener, true).
+	 * @param eventListener event listener to be registered
+	 * @return this
+	 */
+	public final ServletContainerBuilder registerEventListener(Class<? extends EventListener> eventListener) {
+		return registerEventListener(eventListener, true);
+	}
+	
+	
+	/**
+	 * Registers a filter with this context handler builder
+	 * @param filterClass filter class to be registered.
+	 * @param urlPattern URL pattern associated with given filter
+	 * @param append boolean indicating if given filter shall be appended. If false, given filter will be prepended.
+	 * @return this
+	 */
+	public ServletContainerBuilder registerFilter(Class<? extends Filter> filterClass, String urlPattern, boolean append) {
+		contextHandlerBuilder.registerFilter(filterClass, urlPattern, append);
+		return this;
+	}
+	
+	/**
+	 * Convenience method for registerFilter(filterClass, urlPattern, true)
+	 * @param filterClass filter class to be registered
+	 * @param urlPattern URL pattern associated with given filter
+	 * @return this
+	 */
+	public final ServletContainerBuilder registerFilter(Class<? extends Filter> filterClass, String urlPattern) {
+		return registerFilter(filterClass, urlPattern, true);
+	}
+	
+	/**
+	 * Convenience method for registerFilter(filterClass).
+	 * @param filterClass filter class to be registered. Informed class must be annotated with {@linkplain WebFilter}.
+	 * @return this
+	 */
+	public final ServletContainerBuilder registerFilter(Class<?extends Filter> filterClass) {
+		contextHandlerBuilder.registerFilter(filterClass);
+		return this;
+	}
+	
+	
+	/**
+	 * Registers a servlet with this context handler builder.
+	 * @param servletClass servlet class to be registered.
+	 * @param urlPattern URL pattern associated with given servlet
+	 * @return this
+	 */
+	public ServletContainerBuilder registerServlet(Class<? extends HttpServlet> servletClass, String urlPattern) {
+		contextHandlerBuilder.registerServlet(servletClass, urlPattern);
+		return this;
+	}
+	
+	/**
+	 * Convenience method for registerServlet(servletClass).
+	 * @param servletClass servlet class to be registered. Informed class must be annotated with {@linkplain WebServlet}.
+	 * @return this
+	 */
+	public final ServletContainerBuilder registerServlet(Class<? extends HttpServlet> servletClass) {
+		contextHandlerBuilder.registerServlet(servletClass);
+		return this;
+	}
+	
+	public ServletContainerBuilder registerErrorPage(int code, String url) {
+		contextHandlerBuilder.registerErrorPage(code, url);
+		return this;
+	}
+	
+	public ServletContainerBuilder setErrorHandler(ErrorHandler errorHandler) {
+		contextHandlerBuilder.setErrorHandler(errorHandler);
+		return this;
+	}
+	
 	public ServletContainerBuilder setLocalPort(int localPort) {
 		if (this.localPort != null)
 			throw new IllegalStateException("Local port is already set");
@@ -130,6 +219,8 @@ public class ServletContainerBuilder {
 	}
 	
 	public ServletContainer build() {
+		
+		contextHandlerBuilder.endContext();
 
 		if (localPort == null)
 			localPort = 0;
