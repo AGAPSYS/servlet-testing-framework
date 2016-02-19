@@ -131,7 +131,7 @@ class ServletContextHandlerBuilder {
 			throw new IllegalArgumentException("Event listener cannot be null");
 		}
 
-		if (eventListenerSet.add(eventListener)) {
+		if (!eventListenerSet.add(eventListener)) {
 			throw new IllegalArgumentException(String.format("Event listener is already registered: %s", eventListener.getName()));
 		}
 
