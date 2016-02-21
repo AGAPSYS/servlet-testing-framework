@@ -35,7 +35,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 /**
  * @author Leandro Oliveira (leandro@agapsys.com)
  */
-class ServletContextHandlerBuilder {
+public class ServletContextHandlerBuilder {
 
 	// STATIC SCOPE =============================================================
 
