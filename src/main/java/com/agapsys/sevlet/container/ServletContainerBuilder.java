@@ -104,7 +104,7 @@ public class ServletContainerBuilder {
 		return addContext(ROOT_PATH);
 	}
 
-	protected ServletContextHandlerBuilder addContext(String contextPath) {
+	private ServletContextHandlerBuilder addContext(String contextPath) {
 		if (contextPath == null)
 			throw new IllegalArgumentException("Null context path");
 
