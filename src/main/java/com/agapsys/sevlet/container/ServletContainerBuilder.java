@@ -167,7 +167,7 @@ public class ServletContainerBuilder {
 	
 	/**
 	 * Convenience method for registerFilter(filterClass).
-	 * @param filterClass filter class to be registered. Informed class must be annotated with {@linkplain WebFilter}.
+	 * @param filterClass filter class to be registered. Informed class must be annotated with {@linkplain javax.servlet.annotation.WebFilter}.
 	 * @return this
 	 */
 	public final ServletContainerBuilder registerFilter(Class<?extends Filter> filterClass) {
@@ -189,7 +189,7 @@ public class ServletContainerBuilder {
 	
 	/**
 	 * Convenience method for registerServlet(servletClass).
-	 * @param servletClass servlet class to be registered. Informed class must be annotated with {@linkplain WebServlet}.
+	 * @param servletClass servlet class to be registered. Informed class must be annotated with {@linkplain javax.servlet.annotation.WebServlet}.
 	 * @return this
 	 */
 	public final ServletContainerBuilder registerServlet(Class<? extends HttpServlet> servletClass) {
