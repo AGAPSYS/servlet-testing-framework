@@ -28,11 +28,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.log.StdErrLog;
 
-/**
- *
- * @author leandro-agapsys
- */
-public class ServletContainerBuilder {
+public class ServletContainerBuilder<T extends ServletContainerBuilder> {
 
 	// CLASS SCOPE =============================================================
 	public static final String ROOT_PATH = "/";
@@ -128,9 +124,9 @@ public class ServletContainerBuilder {
 	 * @param append boolean indicating if given listener shall be appended. If false, given listener will be prepended.
 	 * @return this
 	 */
-	public ServletContainerBuilder registerEventListener(Class<? extends EventListener> eventListener, boolean append) {
+	public T registerEventListener(Class<? extends EventListener> eventListener, boolean append) {
 		contextHandlerBuilder.registerEventListener(eventListener, append);
-		return this;
+		return (T) this;
 	}
 	
 	/**
@@ -138,7 +134,7 @@ public class ServletContainerBuilder {
 	 * @param eventListener event listener to be registered
 	 * @return this
 	 */
-	public final ServletContainerBuilder registerEventListener(Class<? extends EventListener> eventListener) {
+	public final T registerEventListener(Class<? extends EventListener> eventListener) {
 		return registerEventListener(eventListener, true);
 	}
 	
@@ -150,9 +146,9 @@ public class ServletContainerBuilder {
 	 * @param append boolean indicating if given filter shall be appended. If false, given filter will be prepended.
 	 * @return this
 	 */
-	public ServletContainerBuilder registerFilter(Class<? extends Filter> filterClass, String urlPattern, boolean append) {
+	public T registerFilter(Class<? extends Filter> filterClass, String urlPattern, boolean append) {
 		contextHandlerBuilder.registerFilter(filterClass, urlPattern, append);
-		return this;
+		return (T) this;
 	}
 	
 	/**
@@ -161,7 +157,7 @@ public class ServletContainerBuilder {
 	 * @param urlPattern URL pattern associated with given filter
 	 * @return this
 	 */
-	public final ServletContainerBuilder registerFilter(Class<? extends Filter> filterClass, String urlPattern) {
+	public final T registerFilter(Class<? extends Filter> filterClass, String urlPattern) {
 		return registerFilter(filterClass, urlPattern, true);
 	}
 	
@@ -170,9 +166,9 @@ public class ServletContainerBuilder {
 	 * @param filterClass filter class to be registered. Informed class must be annotated with {@linkplain javax.servlet.annotation.WebFilter}.
 	 * @return this
 	 */
-	public final ServletContainerBuilder registerFilter(Class<?extends Filter> filterClass) {
+	public final T registerFilter(Class<?extends Filter> filterClass) {
 		contextHandlerBuilder.registerFilter(filterClass);
-		return this;
+		return (T) this;
 	}
 	
 	
@@ -182,9 +178,9 @@ public class ServletContainerBuilder {
 	 * @param urlPattern URL pattern associated with given servlet
 	 * @return this
 	 */
-	public ServletContainerBuilder registerServlet(Class<? extends HttpServlet> servletClass, String urlPattern) {
+	public T registerServlet(Class<? extends HttpServlet> servletClass, String urlPattern) {
 		contextHandlerBuilder.registerServlet(servletClass, urlPattern);
-		return this;
+		return (T) this;
 	}
 	
 	/**
@@ -192,22 +188,22 @@ public class ServletContainerBuilder {
 	 * @param servletClass servlet class to be registered. Informed class must be annotated with {@linkplain javax.servlet.annotation.WebServlet}.
 	 * @return this
 	 */
-	public final ServletContainerBuilder registerServlet(Class<? extends HttpServlet> servletClass) {
+	public final T registerServlet(Class<? extends HttpServlet> servletClass) {
 		contextHandlerBuilder.registerServlet(servletClass);
-		return this;
+		return (T) this;
 	}
 	
-	public ServletContainerBuilder registerErrorPage(int code, String url) {
+	public T registerErrorPage(int code, String url) {
 		contextHandlerBuilder.registerErrorPage(code, url);
-		return this;
+		return (T) this;
 	}
 	
-	public ServletContainerBuilder setErrorHandler(ErrorHandler errorHandler) {
+	public T setErrorHandler(ErrorHandler errorHandler) {
 		contextHandlerBuilder.setErrorHandler(errorHandler);
-		return this;
+		return (T) this;
 	}
 	
-	public ServletContainerBuilder setLocalPort(int localPort) {
+	public T setLocalPort(int localPort) {
 		if (this.localPort != null)
 			throw new IllegalStateException("Local port is already set");
 		
@@ -215,7 +211,7 @@ public class ServletContainerBuilder {
 			throw new IllegalArgumentException("Invalid port: " + localPort);
 		
 		this.localPort = localPort;
-		return this;
+		return (T) this;
 	}
 	
 	public ServletContainer build() {
