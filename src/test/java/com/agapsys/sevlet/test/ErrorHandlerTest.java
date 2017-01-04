@@ -29,39 +29,39 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class ErrorHandlerTest {
-	private ServletContainer sc;
-	
-	@After
-	public void after() {
-		sc.stopServer();
-		sc = null;
-	}
-	
-	@Test
-	public void testErrorPage() {
-		sc = new ServletContainerBuilder()
-			.registerServlet(ExceptionServlet.class)
-			.registerServlet(ErrorPage.class)
-			.registerErrorPage(500, ErrorPage.URL)
-			.build();
-		
-		sc.startServer();
-				
-		StringResponse resp = sc.doRequest(new HttpGet(ExceptionServlet.URL));
-		assertEquals(ErrorPage.RESPONSE_MESSAGE, resp.getContentString());
-	}
-	
-	@Test
-	public void testErrorHandler() {
-		sc = new ServletContainerBuilder()
-			.registerServlet(ExceptionServlet.class)
-			.setErrorHandler(new StacktraceErrorHandler())
-			.build();
-		
-		sc.startServer();
-				
-		StringResponse resp = sc.doRequest(new HttpGet(ExceptionServlet.URL));
-		String content = resp.getContentString();
-		assertTrue(content.startsWith("java.lang.RuntimeException"));
-	}
+    private ServletContainer sc;
+    
+    @After
+    public void after() {
+        sc.stopServer();
+        sc = null;
+    }
+    
+    @Test
+    public void testErrorPage() {
+        sc = new ServletContainerBuilder()
+            .registerServlet(ExceptionServlet.class)
+            .registerServlet(ErrorPage.class)
+            .registerErrorPage(500, ErrorPage.URL)
+            .build();
+        
+        sc.startServer();
+                
+        StringResponse resp = sc.doRequest(new HttpGet(ExceptionServlet.URL));
+        assertEquals(ErrorPage.RESPONSE_MESSAGE, resp.getContentString());
+    }
+    
+    @Test
+    public void testErrorHandler() {
+        sc = new ServletContainerBuilder()
+            .registerServlet(ExceptionServlet.class)
+            .setErrorHandler(new StacktraceErrorHandler())
+            .build();
+        
+        sc.startServer();
+                
+        StringResponse resp = sc.doRequest(new HttpGet(ExceptionServlet.URL));
+        String content = resp.getContentString();
+        assertTrue(content.startsWith("java.lang.RuntimeException"));
+    }
 }

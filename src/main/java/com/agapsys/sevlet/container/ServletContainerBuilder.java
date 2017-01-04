@@ -30,215 +30,215 @@ import org.eclipse.jetty.util.log.StdErrLog;
 
 public class ServletContainerBuilder<T extends ServletContainerBuilder> {
 
-	// CLASS SCOPE =============================================================
-	public static final String ROOT_PATH = "/";
-	
-	private static class NoLogger implements Logger {
-		// CLASS SCOPE =========================================================
-		private static NoLogger singletonInstance = null;
-		
-		public static NoLogger getSingletonInstance() {
-			if (singletonInstance == null)
-				singletonInstance = new NoLogger();
-			
-			return singletonInstance;
-		}
-		// =====================================================================
-		
-		// INSTANCE SCOPE ======================================================
-		private NoLogger() {}
-		
-		@Override public String getName() { return ""; }
-		@Override public void warn(String msg, Object... args) { }
-		@Override public void warn(Throwable thrown) { }
-		@Override public void warn(String msg, Throwable thrown) { }
-		@Override public void info(String msg, Object... args) { }
-		@Override public void info(Throwable thrown) { }
-		@Override public void info(String msg, Throwable thrown) { }
-		@Override public boolean isDebugEnabled() { return false; }
-		@Override public void setDebugEnabled(boolean enabled) { }
-		@Override public void debug(String msg, Object... args) { }
-		@Override public void debug(Throwable thrown) { }
-		@Override public void debug(String msg, Throwable thrown) { }
-		@Override public Logger getLogger(String name) { return this; }
-		@Override public void ignore(Throwable ignored) { }
-		@Override public void debug(String arg0, long arg1) { }
-		// =====================================================================
-	}
-	
-	public static ServletContainer getServletContainer(Class<? extends HttpServlet>...servletClasses) {
-		ServletContainerBuilder containerBuilder = new ServletContainerBuilder();
-		for (Class<? extends HttpServlet> servletClass : servletClasses) {
-			containerBuilder.registerServlet(servletClass);
-		}
-		return containerBuilder.build();
-	}
-	
-	static {
-		Map<String, Logger> loggers = org.eclipse.jetty.util.log.Log.getLoggers();
-		for (Map.Entry<String, Logger> entry : loggers.entrySet()) {
-			Logger logger = entry.getValue();
-			
-			((StdErrLog)logger).setLevel(StdErrLog.LEVEL_OFF);
-		}
-		
-		org.eclipse.jetty.util.log.Log.setLog(NoLogger.getSingletonInstance());
-	}
-	// =========================================================================
+    // CLASS SCOPE =============================================================
+    public static final String ROOT_PATH = "/";
+    
+    private static class NoLogger implements Logger {
+        // CLASS SCOPE =========================================================
+        private static NoLogger singletonInstance = null;
+        
+        public static NoLogger getSingletonInstance() {
+            if (singletonInstance == null)
+                singletonInstance = new NoLogger();
+            
+            return singletonInstance;
+        }
+        // =====================================================================
+        
+        // INSTANCE SCOPE ======================================================
+        private NoLogger() {}
+        
+        @Override public String getName() { return ""; }
+        @Override public void warn(String msg, Object... args) { }
+        @Override public void warn(Throwable thrown) { }
+        @Override public void warn(String msg, Throwable thrown) { }
+        @Override public void info(String msg, Object... args) { }
+        @Override public void info(Throwable thrown) { }
+        @Override public void info(String msg, Throwable thrown) { }
+        @Override public boolean isDebugEnabled() { return false; }
+        @Override public void setDebugEnabled(boolean enabled) { }
+        @Override public void debug(String msg, Object... args) { }
+        @Override public void debug(Throwable thrown) { }
+        @Override public void debug(String msg, Throwable thrown) { }
+        @Override public Logger getLogger(String name) { return this; }
+        @Override public void ignore(Throwable ignored) { }
+        @Override public void debug(String arg0, long arg1) { }
+        // =====================================================================
+    }
+    
+    public static ServletContainer getServletContainer(Class<? extends HttpServlet>...servletClasses) {
+        ServletContainerBuilder containerBuilder = new ServletContainerBuilder();
+        for (Class<? extends HttpServlet> servletClass : servletClasses) {
+            containerBuilder.registerServlet(servletClass);
+        }
+        return containerBuilder.build();
+    }
+    
+    static {
+        Map<String, Logger> loggers = org.eclipse.jetty.util.log.Log.getLoggers();
+        for (Map.Entry<String, Logger> entry : loggers.entrySet()) {
+            Logger logger = entry.getValue();
+            
+            ((StdErrLog)logger).setLevel(StdErrLog.LEVEL_OFF);
+        }
+        
+        org.eclipse.jetty.util.log.Log.setLog(NoLogger.getSingletonInstance());
+    }
+    // =========================================================================
 
-	// INSTANCE SCOPE ==========================================================
-	private final ServletContextHandlerBuilder contextHandlerBuilder;
-	final Map<String, ServletContextHandlerBuilder> contextBuilders = new LinkedHashMap<>();
+    // INSTANCE SCOPE ==========================================================
+    private final ServletContextHandlerBuilder contextHandlerBuilder;
+    final Map<String, ServletContextHandlerBuilder> contextBuilders = new LinkedHashMap<>();
 
-	private Integer localPort = null;
-	
-	public ServletContainerBuilder() {
-		contextHandlerBuilder = addRootContext();
-	}
-	
-	private ServletContextHandlerBuilder addRootContext() {
-		return addContext(ROOT_PATH);
-	}
+    private Integer localPort = null;
+    
+    public ServletContainerBuilder() {
+        contextHandlerBuilder = addRootContext();
+    }
+    
+    private ServletContextHandlerBuilder addRootContext() {
+        return addContext(ROOT_PATH);
+    }
 
-	private ServletContextHandlerBuilder addContext(String contextPath) {
-		if (contextPath == null)
-			throw new IllegalArgumentException("Null context path");
+    private ServletContextHandlerBuilder addContext(String contextPath) {
+        if (contextPath == null)
+            throw new IllegalArgumentException("Null context path");
 
-		contextPath = contextPath.trim();
+        contextPath = contextPath.trim();
 
-		if (!contextPath.startsWith("/")) {
-			contextPath = "/" + contextPath;
-		}
+        if (!contextPath.startsWith("/")) {
+            contextPath = "/" + contextPath;
+        }
 
-		if (contextBuilders.containsKey(contextPath)) {
-			throw new IllegalStateException("Context already defined: " + contextPath);
-		}
+        if (contextBuilders.containsKey(contextPath)) {
+            throw new IllegalStateException("Context already defined: " + contextPath);
+        }
 
-		contextBuilders.put(contextPath, null);
-		return new ServletContextHandlerBuilder(this, contextPath);
-	}
+        contextBuilders.put(contextPath, null);
+        return new ServletContextHandlerBuilder(this, contextPath);
+    }
 
-	/**
-	 * Registers an event listener with this context handler builder
-	 * @param eventListener event listener to be registered
-	 * @param append boolean indicating if given listener shall be appended. If false, given listener will be prepended.
-	 * @return this
-	 */
-	public T registerEventListener(Class<? extends EventListener> eventListener, boolean append) {
-		contextHandlerBuilder.registerEventListener(eventListener, append);
-		return (T) this;
-	}
-	
-	/**
-	 * Convenience method for registerEventListener(eventListener, true).
-	 * @param eventListener event listener to be registered
-	 * @return this
-	 */
-	public final T registerEventListener(Class<? extends EventListener> eventListener) {
-		return registerEventListener(eventListener, true);
-	}
-	
-	
-	/**
-	 * Registers a filter with this context handler builder
-	 * @param filterClass filter class to be registered.
-	 * @param urlPattern URL pattern associated with given filter
-	 * @param append boolean indicating if given filter shall be appended. If false, given filter will be prepended.
-	 * @return this
-	 */
-	public T registerFilter(Class<? extends Filter> filterClass, String urlPattern, boolean append) {
-		contextHandlerBuilder.registerFilter(filterClass, urlPattern, append);
-		return (T) this;
-	}
-	
-	/**
-	 * Convenience method for registerFilter(filterClass, urlPattern, true)
-	 * @param filterClass filter class to be registered
-	 * @param urlPattern URL pattern associated with given filter
-	 * @return this
-	 */
-	public final T registerFilter(Class<? extends Filter> filterClass, String urlPattern) {
-		return registerFilter(filterClass, urlPattern, true);
-	}
-	
-	/**
-	 * Convenience method for registerFilter(filterClass).
-	 * @param filterClass filter class to be registered. Informed class must be annotated with {@linkplain javax.servlet.annotation.WebFilter}.
-	 * @return this
-	 */
-	public final T registerFilter(Class<?extends Filter> filterClass) {
-		contextHandlerBuilder.registerFilter(filterClass);
-		return (T) this;
-	}
-	
-	
-	/**
-	 * Registers a servlet with this context handler builder.
-	 * @param servletClass servlet class to be registered.
-	 * @param urlPattern URL pattern associated with given servlet
-	 * @return this
-	 */
-	public T registerServlet(Class<? extends HttpServlet> servletClass, String urlPattern) {
-		contextHandlerBuilder.registerServlet(servletClass, urlPattern);
-		return (T) this;
-	}
-	
-	/**
-	 * Convenience method for registerServlet(servletClass).
-	 * @param servletClass servlet class to be registered. Informed class must be annotated with {@linkplain javax.servlet.annotation.WebServlet}.
-	 * @return this
-	 */
-	public final T registerServlet(Class<? extends HttpServlet> servletClass) {
-		contextHandlerBuilder.registerServlet(servletClass);
-		return (T) this;
-	}
-	
-	public T registerErrorPage(int code, String url) {
-		contextHandlerBuilder.registerErrorPage(code, url);
-		return (T) this;
-	}
-	
-	public T setErrorHandler(ErrorHandler errorHandler) {
-		contextHandlerBuilder.setErrorHandler(errorHandler);
-		return (T) this;
-	}
-	
-	public T setLocalPort(int localPort) {
-		if (this.localPort != null)
-			throw new IllegalStateException("Local port is already set");
-		
-		if (localPort < 1 || localPort > 65535)
-			throw new IllegalArgumentException("Invalid port: " + localPort);
-		
-		this.localPort = localPort;
-		return (T) this;
-	}
-	
-	public ServletContainer build() {
-		
-		contextHandlerBuilder.endContext();
+    /**
+     * Registers an event listener with this context handler builder
+     * @param eventListener event listener to be registered
+     * @param append boolean indicating if given listener shall be appended. If false, given listener will be prepended.
+     * @return this
+     */
+    public T registerEventListener(Class<? extends EventListener> eventListener, boolean append) {
+        contextHandlerBuilder.registerEventListener(eventListener, append);
+        return (T) this;
+    }
+    
+    /**
+     * Convenience method for registerEventListener(eventListener, true).
+     * @param eventListener event listener to be registered
+     * @return this
+     */
+    public final T registerEventListener(Class<? extends EventListener> eventListener) {
+        return registerEventListener(eventListener, true);
+    }
+    
+    
+    /**
+     * Registers a filter with this context handler builder
+     * @param filterClass filter class to be registered.
+     * @param urlPattern URL pattern associated with given filter
+     * @param append boolean indicating if given filter shall be appended. If false, given filter will be prepended.
+     * @return this
+     */
+    public T registerFilter(Class<? extends Filter> filterClass, String urlPattern, boolean append) {
+        contextHandlerBuilder.registerFilter(filterClass, urlPattern, append);
+        return (T) this;
+    }
+    
+    /**
+     * Convenience method for registerFilter(filterClass, urlPattern, true)
+     * @param filterClass filter class to be registered
+     * @param urlPattern URL pattern associated with given filter
+     * @return this
+     */
+    public final T registerFilter(Class<? extends Filter> filterClass, String urlPattern) {
+        return registerFilter(filterClass, urlPattern, true);
+    }
+    
+    /**
+     * Convenience method for registerFilter(filterClass).
+     * @param filterClass filter class to be registered. Informed class must be annotated with {@linkplain javax.servlet.annotation.WebFilter}.
+     * @return this
+     */
+    public final T registerFilter(Class<?extends Filter> filterClass) {
+        contextHandlerBuilder.registerFilter(filterClass);
+        return (T) this;
+    }
+    
+    
+    /**
+     * Registers a servlet with this context handler builder.
+     * @param servletClass servlet class to be registered.
+     * @param urlPattern URL pattern associated with given servlet
+     * @return this
+     */
+    public T registerServlet(Class<? extends HttpServlet> servletClass, String urlPattern) {
+        contextHandlerBuilder.registerServlet(servletClass, urlPattern);
+        return (T) this;
+    }
+    
+    /**
+     * Convenience method for registerServlet(servletClass).
+     * @param servletClass servlet class to be registered. Informed class must be annotated with {@linkplain javax.servlet.annotation.WebServlet}.
+     * @return this
+     */
+    public final T registerServlet(Class<? extends HttpServlet> servletClass) {
+        contextHandlerBuilder.registerServlet(servletClass);
+        return (T) this;
+    }
+    
+    public T registerErrorPage(int code, String url) {
+        contextHandlerBuilder.registerErrorPage(code, url);
+        return (T) this;
+    }
+    
+    public T setErrorHandler(ErrorHandler errorHandler) {
+        contextHandlerBuilder.setErrorHandler(errorHandler);
+        return (T) this;
+    }
+    
+    public T setLocalPort(int localPort) {
+        if (this.localPort != null)
+            throw new IllegalStateException("Local port is already set");
+        
+        if (localPort < 1 || localPort > 65535)
+            throw new IllegalArgumentException("Invalid port: " + localPort);
+        
+        this.localPort = localPort;
+        return (T) this;
+    }
+    
+    public ServletContainer build() {
+        
+        contextHandlerBuilder.endContext();
 
-		if (localPort == null)
-			localPort = 0;
-		
-		Server server = new Server(localPort);
-		
-		Handler[] handlers = new Handler[contextBuilders.size()];
-		
-		int i = 0;
-		for (Map.Entry<String, ServletContextHandlerBuilder> entry : contextBuilders.entrySet()) {
-			ServletContextHandler servletContextHandler = entry.getValue().build();
-			servletContextHandler.setContextPath(entry.getKey());
-			handlers[i] = servletContextHandler;
-			i++;
-		}
-		
-		ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();
-		contextHandlerCollection.setHandlers(handlers);
-		
-		server.setHandler(contextHandlerCollection);
+        if (localPort == null)
+            localPort = 0;
+        
+        Server server = new Server(localPort);
+        
+        Handler[] handlers = new Handler[contextBuilders.size()];
+        
+        int i = 0;
+        for (Map.Entry<String, ServletContextHandlerBuilder> entry : contextBuilders.entrySet()) {
+            ServletContextHandler servletContextHandler = entry.getValue().build();
+            servletContextHandler.setContextPath(entry.getKey());
+            handlers[i] = servletContextHandler;
+            i++;
+        }
+        
+        ContextHandlerCollection contextHandlerCollection = new ContextHandlerCollection();
+        contextHandlerCollection.setHandlers(handlers);
+        
+        server.setHandler(contextHandlerCollection);
 
-		return new ServletContainer(server);
-	}
-	// =========================================================================
+        return new ServletContainer(server);
+    }
+    // =========================================================================
 }

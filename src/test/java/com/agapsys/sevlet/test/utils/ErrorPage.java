@@ -25,11 +25,11 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(ErrorPage.URL)
 public class ErrorPage extends HttpServlet {
-	public static final String URL = "/error";
-	public static final String RESPONSE_MESSAGE = "Error captured";
+    public static final String URL = "/error";
+    public static final String RESPONSE_MESSAGE = "Error captured";
 
-	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.getWriter().print(RESPONSE_MESSAGE);
-	}
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.getWriter().print(RESPONSE_MESSAGE);
+    }
 }

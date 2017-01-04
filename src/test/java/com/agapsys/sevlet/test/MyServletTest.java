@@ -28,31 +28,31 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class MyServletTest {
-	private static final String CONTEXT = "/";
-	
-	private ServletContainer sc;
-	
-	@Before
-	public void setUp() {
-		sc = ServletContainerBuilder.getServletContainer(MyServlet.class);
-		sc.startServer();
-	}
-	
-	@After
-	public void tearDown() {
-		sc.stopServer();
-	}
+    private static final String CONTEXT = "/";
+    
+    private ServletContainer sc;
+    
+    @Before
+    public void setUp() {
+        sc = ServletContainerBuilder.getServletContainer(MyServlet.class);
+        sc.startServer();
+    }
+    
+    @After
+    public void tearDown() {
+        sc.stopServer();
+    }
 
-	@Test
-	public void testServletResponse() throws IOException {
-		String testUrl = CONTEXT + MyServlet.URL1;
-		
-		StringResponse response = sc.doRequest(new HttpGet(testUrl));
-		assertEquals(response.getStatusCode(), 200);
+    @Test
+    public void testServletResponse() throws IOException {
+        String testUrl = CONTEXT + MyServlet.URL1;
+        
+        StringResponse response = sc.doRequest(new HttpGet(testUrl));
+        assertEquals(response.getStatusCode(), 200);
 
-		String responseStr = response.getContentString();
+        String responseStr = response.getContentString();
 
-		assertEquals(responseStr, MyServlet.URL1);
-		
-	}
+        assertEquals(responseStr, MyServlet.URL1);
+        
+    }
 }

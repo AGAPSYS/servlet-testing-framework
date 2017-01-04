@@ -28,115 +28,115 @@ import org.eclipse.jetty.server.ServerConnector;
  */
 public class ServletContainer {
 
-	private final Server server;
+    private final Server server;
 
-	ServletContainer(Server server) {
-		this.server = server;
-	}
-	
-	/**
-	 * Returns a boolean indicating if server is running.
-	 *
-	 * @return a boolean indicating if server is running.
-	 */
-	public boolean isRunning() {
-		return server.isRunning();
-	}
+    ServletContainer(Server server) {
+        this.server = server;
+    }
+    
+    /**
+     * Returns a boolean indicating if server is running.
+     *
+     * @return a boolean indicating if server is running.
+     */
+    public boolean isRunning() {
+        return server.isRunning();
+    }
 
-	/**
-	 * Returns the local TCP port used by the server.
-	 *
-	 * @return the local TCP port used by the server.
-	 */
-	public int getLocalPort() {
-		if (!isRunning())
-			throw new IllegalStateException("Server is not running");
+    /**
+     * Returns the local TCP port used by the server.
+     *
+     * @return the local TCP port used by the server.
+     */
+    public int getLocalPort() {
+        if (!isRunning())
+            throw new IllegalStateException("Server is not running");
 
-		return ((ServerConnector) server.getConnectors()[0]).getLocalPort();
-	}
+        return ((ServerConnector) server.getConnectors()[0]).getLocalPort();
+    }
 
-	/**
-	 * Stops the server.
-	 */
-	public void stopServer() {
-		if (!isRunning())
-			throw new IllegalStateException("Server is not running");
+    /**
+     * Stops the server.
+     */
+    public void stopServer() {
+        if (!isRunning())
+            throw new IllegalStateException("Server is not running");
 
-		try {
-			server.stop();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+        try {
+            server.stop();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	/**
-	 * Starts server.
-	 */
-	public void startServer() {
-		if (isRunning())
-			throw new IllegalStateException("Server is already running");
+    /**
+     * Starts server.
+     */
+    public void startServer() {
+        if (isRunning())
+            throw new IllegalStateException("Server is already running");
 
-		try {
-			server.start();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+        try {
+            server.start();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	/**
-	 * Perform a request against this servlet container.
-	 *
-	 * @param client {@linkplain HttpClient} instance
-	 * @param request {@linkplain HttpRequest} instance
-	 * @return response
-	 */
-	public StringResponse doRequest(HttpClient client, HttpRequest request) {
-		if (!isRunning()) {
-			throw new IllegalStateException("Server is not running");
-		}
+    /**
+     * Perform a request against this servlet container.
+     *
+     * @param client {@linkplain HttpClient} instance
+     * @param request {@linkplain HttpRequest} instance
+     * @return response
+     */
+    public StringResponse doRequest(HttpClient client, HttpRequest request) {
+        if (!isRunning()) {
+            throw new IllegalStateException("Server is not running");
+        }
 
-		// Change URI to use servlet container
-		String oldUri = request.getUri();
+        // Change URI to use servlet container
+        String oldUri = request.getUri();
 
-		if (oldUri == null || oldUri.isEmpty()) {
-			throw new IllegalArgumentException("Null/Empty uri");
-		}
+        if (oldUri == null || oldUri.isEmpty()) {
+            throw new IllegalArgumentException("Null/Empty uri");
+        }
 
-		if (oldUri.contains(":") || oldUri.contains(" ") || !oldUri.startsWith("/")) {
-			throw new IllegalArgumentException("Invalid uri: " + oldUri);
-		}
+        if (oldUri.contains(":") || oldUri.contains(" ") || !oldUri.startsWith("/")) {
+            throw new IllegalArgumentException("Invalid uri: " + oldUri);
+        }
 
-		request.setUri(String.format("http://localhost:%d%s", getLocalPort(), oldUri));
+        request.setUri(String.format("http://localhost:%d%s", getLocalPort(), oldUri));
 
-		HttpResponse.StringResponse resp;
-		try {
-			resp = HttpResponse.getStringResponse(client, request, "utf-8", -1);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+        HttpResponse.StringResponse resp;
+        try {
+            resp = HttpResponse.getStringResponse(client, request, "utf-8", -1);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-		// Restore servlet URI
-		request.setUri(oldUri);
+        // Restore servlet URI
+        request.setUri(oldUri);
 
-		return resp;
-	}
+        return resp;
+    }
 
-	/**
-	 * Perform a request against this servlet container.
-	 *
-	 * @param request {@linkplain HttpRequest} instance
-	 * @return response
-	 */
-	public StringResponse doRequest(HttpRequest request) {
-		try {
-			HttpClient client = new HttpClient();
-			HttpResponse.StringResponse response = doRequest(client, request);
-			client.close();
-			return response;
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+    /**
+     * Perform a request against this servlet container.
+     *
+     * @param request {@linkplain HttpRequest} instance
+     * @return response
+     */
+    public StringResponse doRequest(HttpRequest request) {
+        try {
+            HttpClient client = new HttpClient();
+            HttpResponse.StringResponse response = doRequest(client, request);
+            client.close();
+            return response;
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
-	// =========================================================================
+    // =========================================================================
 }

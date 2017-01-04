@@ -25,10 +25,10 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(ExceptionServlet.URL)
 public class ExceptionServlet extends HttpServlet {
-	public static final String URL = "/exception";
+    public static final String URL = "/exception";
 
-	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		throw new RuntimeException();
-	}
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        throw new RuntimeException();
+    }
 }

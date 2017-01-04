@@ -25,30 +25,30 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.ErrorHandler;
 
 public class StacktraceErrorHandler extends ErrorHandler {
-	// CLASS SCOPE =============================================================
-	private static final String ATTR_EXCEPTION = "javax.servlet.error.exception";
-	
-	private static String getStackTrace(Request baseRequest) {
-		Throwable throwable = (Throwable) baseRequest.getAttribute(ATTR_EXCEPTION);
-		if (throwable != null) {
-			StringWriter stringWriter = new StringWriter();
-			throwable.printStackTrace(new PrintWriter(stringWriter));
-			return stringWriter.toString();
-		} else {
-			return null;
-		}
-	}
-	// =========================================================================
-	
-	// INSTANCE SCOPE ==========================================================
-	@Override
-	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String stackTrace = getStackTrace(baseRequest);
-		if (stackTrace != null) {
-			response.getWriter().print(getStackTrace(baseRequest));
-		} else {
-			super.handle(target, baseRequest, request, response);
-		}
-	}
-	// =========================================================================
+    // CLASS SCOPE =============================================================
+    private static final String ATTR_EXCEPTION = "javax.servlet.error.exception";
+    
+    private static String getStackTrace(Request baseRequest) {
+        Throwable throwable = (Throwable) baseRequest.getAttribute(ATTR_EXCEPTION);
+        if (throwable != null) {
+            StringWriter stringWriter = new StringWriter();
+            throwable.printStackTrace(new PrintWriter(stringWriter));
+            return stringWriter.toString();
+        } else {
+            return null;
+        }
+    }
+    // =========================================================================
+    
+    // INSTANCE SCOPE ==========================================================
+    @Override
+    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String stackTrace = getStackTrace(baseRequest);
+        if (stackTrace != null) {
+            response.getWriter().print(getStackTrace(baseRequest));
+        } else {
+            super.handle(target, baseRequest, request, response);
+        }
+    }
+    // =========================================================================
 }

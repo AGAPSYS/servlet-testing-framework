@@ -28,25 +28,25 @@ import javax.servlet.http.HttpServletResponse;
 
 public abstract class SimpleHttpFilter implements Filter {
 
-	@Override
-	public final void init(FilterConfig fc) throws ServletException {}
+    @Override
+    public final void init(FilterConfig fc) throws ServletException {}
 
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-		
-		beforeChain(httpServletRequest, httpServletResponse);
-		doFilter(httpServletRequest, httpServletResponse, filterChain);
-		afterChain(httpServletRequest, httpServletResponse);
-	}
-	
-	@Override
-	public final void destroy() {}
-	
-	protected void beforeChain(HttpServletRequest request, HttpServletResponse response) {}
-	
-	protected void afterChain(HttpServletRequest request, HttpServletResponse response) {}
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        
+        beforeChain(httpServletRequest, httpServletResponse);
+        doFilter(httpServletRequest, httpServletResponse, filterChain);
+        afterChain(httpServletRequest, httpServletResponse);
+    }
+    
+    @Override
+    public final void destroy() {}
+    
+    protected void beforeChain(HttpServletRequest request, HttpServletResponse response) {}
+    
+    protected void afterChain(HttpServletRequest request, HttpServletResponse response) {}
 
-	protected abstract void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException;
+    protected abstract void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException;
 }

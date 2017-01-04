@@ -26,9 +26,9 @@ import javax.servlet.http.HttpServletResponse;
 @WebFilter(urlPatterns = {MyServlet.URL1, MyServlet.URL2})
 public class MyFilter extends SimpleHttpFilter {
 
-	@Override
-	protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-		response.getWriter().print("Filtered");
-		filterChain.doFilter(request, response);
-	}
+    @Override
+    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        response.getWriter().print("Filtered");
+        filterChain.doFilter(request, response);
+    }
 }

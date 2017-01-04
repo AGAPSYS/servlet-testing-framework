@@ -26,25 +26,25 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {MyServlet.URL1, MyServlet.URL2})
 public class MyServlet extends HttpServlet{
-	public static final String URL1 = "/api/test1";
-	public static final String URL2 = "/api/test2";
-	
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		PrintWriter writer = resp.getWriter();
-		writer.print(req.getServletPath());
-	}
+    public static final String URL1 = "/api/test1";
+    public static final String URL2 = "/api/test2";
+    
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        PrintWriter writer = resp.getWriter();
+        writer.print(req.getServletPath());
+    }
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		if (req.getPathInfo().equals(URL2)) {
-			resp.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-			resp.flushBuffer();
-		}
-		
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (req.getPathInfo().equals(URL2)) {
+            resp.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+            resp.flushBuffer();
+        }
+        
 
-		resp.getWriter().print(req.getServletPath());
-	}
+        resp.getWriter().print(req.getServletPath());
+    }
 
 }
 

@@ -37,301 +37,301 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
  */
 class ServletContextHandlerBuilder {
 
-	// STATIC SCOPE =============================================================
+    // STATIC SCOPE =============================================================
 
-	private class UrlMapping<T> extends LinkedHashMap<String, T> {}
+    private class UrlMapping<T> extends LinkedHashMap<String, T> {}
 
-	private static class ClassMapping<T> {
+    private static class ClassMapping<T> {
 
-		public final Class<? extends T> mappedClass;
-		public final String urlPattern;
+        public final Class<? extends T> mappedClass;
+        public final String urlPattern;
 
-		public ClassMapping(String urlPattern, Class<? extends T> mappedClass) {
-			if (urlPattern == null || urlPattern.trim().isEmpty()) {
-				throw new IllegalArgumentException("Null/Empty URL pattern");
-			}
+        public ClassMapping(String urlPattern, Class<? extends T> mappedClass) {
+            if (urlPattern == null || urlPattern.trim().isEmpty()) {
+                throw new IllegalArgumentException("Null/Empty URL pattern");
+            }
 
-			if (mappedClass == null) {
-				throw new IllegalArgumentException("Original class cannot be null");
-			}
+            if (mappedClass == null) {
+                throw new IllegalArgumentException("Original class cannot be null");
+            }
 
-			this.urlPattern = urlPattern;
-			this.mappedClass = mappedClass;
-		}
+            this.urlPattern = urlPattern;
+            this.mappedClass = mappedClass;
+        }
 
-		@Override
-		public int hashCode() {
-			int hash = 7;
-			return hash;
-		}
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            return hash;
+        }
 
-		@Override
-		public boolean equals(Object obj) {
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
-				return false;
-			}
-			final ClassMapping<?> other = (ClassMapping<?>) obj;
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final ClassMapping<?> other = (ClassMapping<?>) obj;
 
-			if (!Objects.equals(this.urlPattern, other.urlPattern))
-				return false;
+            if (!Objects.equals(this.urlPattern, other.urlPattern))
+                return false;
 
-			if (!Objects.equals(this.mappedClass, other.mappedClass))
-				return false;
+            if (!Objects.equals(this.mappedClass, other.mappedClass))
+                return false;
 
-			return true;
-		}
-	}
+            return true;
+        }
+    }
 
-	private static class FilterMapping extends ClassMapping<Filter> {
+    private static class FilterMapping extends ClassMapping<Filter> {
 
-		public FilterMapping(Class<? extends Filter> filterClass, String urlPattern) {
-			super(urlPattern, filterClass);
-		}
-	}
+        public FilterMapping(Class<? extends Filter> filterClass, String urlPattern) {
+            super(urlPattern, filterClass);
+        }
+    }
 
-	private static class ServletMapping extends ClassMapping<HttpServlet> {
+    private static class ServletMapping extends ClassMapping<HttpServlet> {
 
-		public ServletMapping(Class<? extends HttpServlet> servletClass, String urlPattern) {
-			super(urlPattern, servletClass);
-		}
-	}
-	// =========================================================================
+        public ServletMapping(Class<? extends HttpServlet> servletClass, String urlPattern) {
+            super(urlPattern, servletClass);
+        }
+    }
+    // =========================================================================
 
-	// INSTANCE SCOPE ==========================================================
-	private final UrlMapping<FilterMapping> urlFilterMapping = new UrlMapping<>();
-	private final UrlMapping<ServletMapping> urlServletMapping = new UrlMapping<>();
-	private final Set<Class<? extends EventListener>> eventListenerSet = new LinkedHashSet<>();
+    // INSTANCE SCOPE ==========================================================
+    private final UrlMapping<FilterMapping> urlFilterMapping = new UrlMapping<>();
+    private final UrlMapping<ServletMapping> urlServletMapping = new UrlMapping<>();
+    private final Set<Class<? extends EventListener>> eventListenerSet = new LinkedHashSet<>();
 
-	private final List<FilterMapping> filterMappingList = new LinkedList<>();
-	private final List<ServletMapping> servletMappingList = new LinkedList<>();
+    private final List<FilterMapping> filterMappingList = new LinkedList<>();
+    private final List<ServletMapping> servletMappingList = new LinkedList<>();
 
-	private final ServletContainerBuilder servletContainerBuilder;
-	private final String contextPath;
+    private final ServletContainerBuilder servletContainerBuilder;
+    private final String contextPath;
 
-	private ErrorHandler errorHandler = null;
+    private ErrorHandler errorHandler = null;
 
-	ServletContextHandlerBuilder(ServletContainerBuilder servletContainerBuilder, String contextPath) {
-		this.servletContainerBuilder = servletContainerBuilder;
-		this.contextPath = contextPath;
-	}
+    ServletContextHandlerBuilder(ServletContainerBuilder servletContainerBuilder, String contextPath) {
+        this.servletContainerBuilder = servletContainerBuilder;
+        this.contextPath = contextPath;
+    }
 
-	/**
-	 * Registers an event listener with this context handler builder
-	 *
-	 * @param eventListener event listener to be registered
-	 * @param append boolean indicating if given listener shall be appended. If
-	 * false, given listener will be prepended.
-	 * @return this
-	 */
-	public ServletContextHandlerBuilder registerEventListener(Class<? extends EventListener> eventListener, boolean append) {
-		if (eventListener == null) {
-			throw new IllegalArgumentException("Event listener cannot be null");
-		}
+    /**
+     * Registers an event listener with this context handler builder
+     *
+     * @param eventListener event listener to be registered
+     * @param append boolean indicating if given listener shall be appended. If
+     * false, given listener will be prepended.
+     * @return this
+     */
+    public ServletContextHandlerBuilder registerEventListener(Class<? extends EventListener> eventListener, boolean append) {
+        if (eventListener == null) {
+            throw new IllegalArgumentException("Event listener cannot be null");
+        }
 
-		if (!eventListenerSet.add(eventListener)) {
-			throw new IllegalArgumentException(String.format("Event listener is already registered: %s", eventListener.getName()));
-		}
+        if (!eventListenerSet.add(eventListener)) {
+            throw new IllegalArgumentException(String.format("Event listener is already registered: %s", eventListener.getName()));
+        }
 
-		return this;
-	}
+        return this;
+    }
 
-	/**
-	 * Convenience method for registerEventListener(eventListener, true).
-	 *
-	 * @param eventListener event listener to be registered
-	 * @return this
-	 */
-	public final ServletContextHandlerBuilder registerEventListener(Class<? extends EventListener> eventListener) {
-		return registerEventListener(eventListener, true);
-	}
+    /**
+     * Convenience method for registerEventListener(eventListener, true).
+     *
+     * @param eventListener event listener to be registered
+     * @return this
+     */
+    public final ServletContextHandlerBuilder registerEventListener(Class<? extends EventListener> eventListener) {
+        return registerEventListener(eventListener, true);
+    }
 
-	/**
-	 * Registers a filter with this context handler builder
-	 *
-	 * @param filterClass filter class to be registered.
-	 * @param urlPattern URL pattern associated with given filter
-	 * @param append boolean indicating if given filter shall be appended. If
-	 * false, given filter will be prepended.
-	 * @return this
-	 */
-	public ServletContextHandlerBuilder registerFilter(Class<? extends Filter> filterClass, String urlPattern, boolean append) {
-		FilterMapping filterMapping = urlFilterMapping.get(urlPattern);
+    /**
+     * Registers a filter with this context handler builder
+     *
+     * @param filterClass filter class to be registered.
+     * @param urlPattern URL pattern associated with given filter
+     * @param append boolean indicating if given filter shall be appended. If
+     * false, given filter will be prepended.
+     * @return this
+     */
+    public ServletContextHandlerBuilder registerFilter(Class<? extends Filter> filterClass, String urlPattern, boolean append) {
+        FilterMapping filterMapping = urlFilterMapping.get(urlPattern);
 
-		if (filterMapping != null && filterMapping.mappedClass == filterClass) {
-			throw new IllegalArgumentException(String.format("URL pattern is already associated with given filter class: %s => %s", urlPattern, filterClass.getName()));
-		}
+        if (filterMapping != null && filterMapping.mappedClass == filterClass) {
+            throw new IllegalArgumentException(String.format("URL pattern is already associated with given filter class: %s => %s", urlPattern, filterClass.getName()));
+        }
 
-		filterMapping = new FilterMapping(filterClass, urlPattern);
-		urlFilterMapping.put(urlPattern, filterMapping);
+        filterMapping = new FilterMapping(filterClass, urlPattern);
+        urlFilterMapping.put(urlPattern, filterMapping);
 
-		filterMappingList.add(append ? filterMappingList.size() : 0, filterMapping);
-		return this;
-	}
+        filterMappingList.add(append ? filterMappingList.size() : 0, filterMapping);
+        return this;
+    }
 
-	/**
-	 * Convenience method for registerFilter(filterClass, urlPattern, true)
-	 *
-	 * @param filterClass filter class to be registered
-	 * @param urlPattern URL pattern associated with given filter
-	 * @return this
-	 */
-	public final ServletContextHandlerBuilder registerFilter(Class<? extends Filter> filterClass, String urlPattern) {
-		return registerFilter(filterClass, urlPattern, true);
-	}
+    /**
+     * Convenience method for registerFilter(filterClass, urlPattern, true)
+     *
+     * @param filterClass filter class to be registered
+     * @param urlPattern URL pattern associated with given filter
+     * @return this
+     */
+    public final ServletContextHandlerBuilder registerFilter(Class<? extends Filter> filterClass, String urlPattern) {
+        return registerFilter(filterClass, urlPattern, true);
+    }
 
-	/**
-	 * Convenience method for registerFilter(filterClass).
-	 *
-	 * @param filterClass filter class to be registered. Informed class must be
-	 * annotated with {@linkplain WebFilter}.
-	 * @return this
-	 */
-	public final ServletContextHandlerBuilder registerFilter(Class<? extends Filter> filterClass) {
-		WebFilter[] annotations = filterClass.getAnnotationsByType(WebFilter.class);
+    /**
+     * Convenience method for registerFilter(filterClass).
+     *
+     * @param filterClass filter class to be registered. Informed class must be
+     * annotated with {@linkplain WebFilter}.
+     * @return this
+     */
+    public final ServletContextHandlerBuilder registerFilter(Class<? extends Filter> filterClass) {
+        WebFilter[] annotations = filterClass.getAnnotationsByType(WebFilter.class);
 
-		if (annotations.length == 0) {
-			throw new IllegalArgumentException("Filter class does not have a WebFilter annotation");
-		}
+        if (annotations.length == 0) {
+            throw new IllegalArgumentException("Filter class does not have a WebFilter annotation");
+        }
 
-		for (WebFilter annotation : annotations) {
-			String[] urlPatterns = annotation.value();
-			if (urlPatterns.length == 0) {
-				urlPatterns = annotation.urlPatterns();
-			}
+        for (WebFilter annotation : annotations) {
+            String[] urlPatterns = annotation.value();
+            if (urlPatterns.length == 0) {
+                urlPatterns = annotation.urlPatterns();
+            }
 
-			if (urlPatterns.length == 0) {
-				throw new IllegalArgumentException("Missing urlPatterns");
-			}
+            if (urlPatterns.length == 0) {
+                throw new IllegalArgumentException("Missing urlPatterns");
+            }
 
-			for (String urlPattern : urlPatterns) {
-				registerFilter(filterClass, urlPattern);
-			}
-		}
+            for (String urlPattern : urlPatterns) {
+                registerFilter(filterClass, urlPattern);
+            }
+        }
 
-		return this;
-	}
+        return this;
+    }
 
-	/**
-	 * Registers a servlet with this context handler builder.
-	 *
-	 * @param servletClass servlet class to be registered.
-	 * @param urlPattern URL pattern associated with given servlet
-	 * @return this
-	 */
-	public ServletContextHandlerBuilder registerServlet(Class<? extends HttpServlet> servletClass, String urlPattern) {
-		ServletMapping servletMapping = urlServletMapping.get(urlPattern);
+    /**
+     * Registers a servlet with this context handler builder.
+     *
+     * @param servletClass servlet class to be registered.
+     * @param urlPattern URL pattern associated with given servlet
+     * @return this
+     */
+    public ServletContextHandlerBuilder registerServlet(Class<? extends HttpServlet> servletClass, String urlPattern) {
+        ServletMapping servletMapping = urlServletMapping.get(urlPattern);
 
-		if (servletMapping != null) {
-			throw new IllegalArgumentException(String.format("URL pattern is already associated with a servlet: %s => %s", urlPattern, servletClass.getName()));
-		}
+        if (servletMapping != null) {
+            throw new IllegalArgumentException(String.format("URL pattern is already associated with a servlet: %s => %s", urlPattern, servletClass.getName()));
+        }
 
-		servletMapping = new ServletMapping(servletClass, urlPattern);
-		urlServletMapping.put(urlPattern, servletMapping);
+        servletMapping = new ServletMapping(servletClass, urlPattern);
+        urlServletMapping.put(urlPattern, servletMapping);
 
-		servletMappingList.add(servletMapping);
-		return this;
-	}
+        servletMappingList.add(servletMapping);
+        return this;
+    }
 
-	/**
-	 * Convenience method for registerServlet(servletClass).
-	 *
-	 * @param servletClass servlet class to be registered. Informed class must
-	 * be annotated with {@linkplain WebServlet}.
-	 * @return this
-	 */
-	public final ServletContextHandlerBuilder registerServlet(Class<? extends HttpServlet> servletClass) {
-		WebServlet[] annotations = servletClass.getAnnotationsByType(WebServlet.class);
-		if (annotations.length == 0) {
-			throw new IllegalArgumentException("Servlet class does not have a WebServlet annotation");
-		}
+    /**
+     * Convenience method for registerServlet(servletClass).
+     *
+     * @param servletClass servlet class to be registered. Informed class must
+     * be annotated with {@linkplain WebServlet}.
+     * @return this
+     */
+    public final ServletContextHandlerBuilder registerServlet(Class<? extends HttpServlet> servletClass) {
+        WebServlet[] annotations = servletClass.getAnnotationsByType(WebServlet.class);
+        if (annotations.length == 0) {
+            throw new IllegalArgumentException("Servlet class does not have a WebServlet annotation");
+        }
 
-		for (WebServlet annotation : annotations) {
-			String[] urlPatterns = annotation.value();
-			if (urlPatterns.length == 0) {
-				urlPatterns = annotation.urlPatterns();
-			}
+        for (WebServlet annotation : annotations) {
+            String[] urlPatterns = annotation.value();
+            if (urlPatterns.length == 0) {
+                urlPatterns = annotation.urlPatterns();
+            }
 
-			if (urlPatterns.length == 0) {
-				throw new IllegalArgumentException("Missing urlPatterns");
-			}
+            if (urlPatterns.length == 0) {
+                throw new IllegalArgumentException("Missing urlPatterns");
+            }
 
-			for (String urlPattern : urlPatterns) {
-				registerServlet(servletClass, urlPattern);
-			}
-		}
+            for (String urlPattern : urlPatterns) {
+                registerServlet(servletClass, urlPattern);
+            }
+        }
 
-		return this;
-	}
+        return this;
+    }
 
-	public ServletContextHandlerBuilder registerErrorPage(int code, String url) {
-		if (url == null || url.trim().isEmpty()) {
-			throw new IllegalArgumentException("Null/Empty URL");
-		}
+    public ServletContextHandlerBuilder registerErrorPage(int code, String url) {
+        if (url == null || url.trim().isEmpty()) {
+            throw new IllegalArgumentException("Null/Empty URL");
+        }
 
-		if (errorHandler == null) {
-			errorHandler = new ErrorPageErrorHandler();
-		}
+        if (errorHandler == null) {
+            errorHandler = new ErrorPageErrorHandler();
+        }
 
-		if (!(errorHandler instanceof ErrorPageErrorHandler)) {
-			throw new IllegalStateException("An custom error handler is already defined");
-		}
+        if (!(errorHandler instanceof ErrorPageErrorHandler)) {
+            throw new IllegalStateException("An custom error handler is already defined");
+        }
 
-		((ErrorPageErrorHandler) errorHandler).addErrorPage(code, url);
+        ((ErrorPageErrorHandler) errorHandler).addErrorPage(code, url);
 
-		return this;
-	}
+        return this;
+    }
 
-	public ServletContextHandlerBuilder setErrorHandler(ErrorHandler errorHandler) {
-		if (errorHandler == null) {
-			throw new IllegalArgumentException("Error handler cannot be null");
-		}
+    public ServletContextHandlerBuilder setErrorHandler(ErrorHandler errorHandler) {
+        if (errorHandler == null) {
+            throw new IllegalArgumentException("Error handler cannot be null");
+        }
 
-		if (this.errorHandler != null) {
-			throw new IllegalArgumentException("Error handler is already defined");
-		}
+        if (this.errorHandler != null) {
+            throw new IllegalArgumentException("Error handler is already defined");
+        }
 
-		this.errorHandler = errorHandler;
-		return this;
-	}
+        this.errorHandler = errorHandler;
+        return this;
+    }
 
-	public ServletContainerBuilder endContext() {
-		servletContainerBuilder.contextBuilders.put(contextPath, this);
-		return servletContainerBuilder;
-	}
+    public ServletContainerBuilder endContext() {
+        servletContainerBuilder.contextBuilders.put(contextPath, this);
+        return servletContainerBuilder;
+    }
 
-	ServletContextHandler build() {
-		ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+    ServletContextHandler build() {
+        ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
-		for (FilterMapping filterMapping : filterMappingList) {
-			Class<? extends Filter> filterClass = filterMapping.mappedClass;
-			String urlPattern = filterMapping.urlPattern;
+        for (FilterMapping filterMapping : filterMappingList) {
+            Class<? extends Filter> filterClass = filterMapping.mappedClass;
+            String urlPattern = filterMapping.urlPattern;
 
-			servletContextHandler.addFilter(filterClass, urlPattern, EnumSet.of(DispatcherType.REQUEST));
-		}
+            servletContextHandler.addFilter(filterClass, urlPattern, EnumSet.of(DispatcherType.REQUEST));
+        }
 
-		for (ServletMapping servletMapping : servletMappingList) {
-			Class<? extends HttpServlet> servletClass = servletMapping.mappedClass;
-			String urlPattern = servletMapping.urlPattern;
+        for (ServletMapping servletMapping : servletMappingList) {
+            Class<? extends HttpServlet> servletClass = servletMapping.mappedClass;
+            String urlPattern = servletMapping.urlPattern;
 
-			servletContextHandler.addServlet(servletClass, urlPattern);
-		}
+            servletContextHandler.addServlet(servletClass, urlPattern);
+        }
 
-		for (Class<? extends EventListener> eventListenerClass : eventListenerSet) {
-			try {
-				EventListener eventListener = eventListenerClass.newInstance();
-				servletContextHandler.addEventListener(eventListener);
-			} catch (IllegalAccessException | InstantiationException ex) {
-				throw new RuntimeException(ex);
-			}
-		}
+        for (Class<? extends EventListener> eventListenerClass : eventListenerSet) {
+            try {
+                EventListener eventListener = eventListenerClass.newInstance();
+                servletContextHandler.addEventListener(eventListener);
+            } catch (IllegalAccessException | InstantiationException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
 
-		if (errorHandler != null) {
-			servletContextHandler.setErrorHandler(errorHandler);
-		}
+        if (errorHandler != null) {
+            servletContextHandler.setErrorHandler(errorHandler);
+        }
 
-		return servletContextHandler;
-	}
+        return servletContextHandler;
+    }
 }
