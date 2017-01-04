@@ -32,9 +32,6 @@ import org.eclipse.jetty.server.handler.ErrorHandler;
 import org.eclipse.jetty.servlet.ErrorPageErrorHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
-/**
- * @author Leandro Oliveira (leandro@agapsys.com)
- */
 class ServletContextHandlerBuilder {
 
     // STATIC SCOPE =============================================================
