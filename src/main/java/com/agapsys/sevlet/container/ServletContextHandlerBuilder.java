@@ -109,6 +109,16 @@ class ServletContextHandlerBuilder {
     private final String contextPath;
 
     private ErrorHandler errorHandler = null;
+    private boolean done = false;
+
+    private void __throwIfDone() {
+        if (_isDone())
+            throw new IllegalStateException("done() already called");
+    }
+
+    boolean _isDone() {
+        return done;
+    }
 
     ServletContextHandlerBuilder(ServletContainerBuilder servletContainerBuilder, String contextPath) {
         this.servletContainerBuilder = servletContainerBuilder;
@@ -124,6 +134,8 @@ class ServletContextHandlerBuilder {
      * @return this
      */
     public ServletContextHandlerBuilder registerEventListener(Class<? extends EventListener> eventListener, boolean append) {
+        __throwIfDone();
+
         if (eventListener == null) {
             throw new IllegalArgumentException("Event listener cannot be null");
         }
@@ -155,6 +167,8 @@ class ServletContextHandlerBuilder {
      * @return this
      */
     public ServletContextHandlerBuilder registerFilter(Class<? extends Filter> filterClass, String urlPattern, boolean append) {
+        __throwIfDone();
+
         FilterMapping filterMapping = urlFilterMapping.get(urlPattern);
 
         if (filterMapping != null && filterMapping.mappedClass == filterClass) {
@@ -187,6 +201,8 @@ class ServletContextHandlerBuilder {
      * @return this
      */
     public final ServletContextHandlerBuilder registerFilter(Class<? extends Filter> filterClass) {
+        __throwIfDone();
+
         WebFilter[] annotations = filterClass.getAnnotationsByType(WebFilter.class);
 
         if (annotations.length == 0) {
@@ -219,6 +235,8 @@ class ServletContextHandlerBuilder {
      * @return this
      */
     public ServletContextHandlerBuilder registerServlet(Class<? extends HttpServlet> servletClass, String urlPattern) {
+        __throwIfDone();
+
         ServletMapping servletMapping = urlServletMapping.get(urlPattern);
 
         if (servletMapping != null) {
@@ -240,6 +258,8 @@ class ServletContextHandlerBuilder {
      * @return this
      */
     public final ServletContextHandlerBuilder registerServlet(Class<? extends HttpServlet> servletClass) {
+        __throwIfDone();
+
         WebServlet[] annotations = servletClass.getAnnotationsByType(WebServlet.class);
         if (annotations.length == 0) {
             throw new IllegalArgumentException("Servlet class does not have a WebServlet annotation");
@@ -264,6 +284,8 @@ class ServletContextHandlerBuilder {
     }
 
     public ServletContextHandlerBuilder registerErrorPage(int code, String url) {
+        __throwIfDone();
+
         if (url == null || url.trim().isEmpty()) {
             throw new IllegalArgumentException("Null/Empty URL");
         }
@@ -282,6 +304,8 @@ class ServletContextHandlerBuilder {
     }
 
     public ServletContextHandlerBuilder setErrorHandler(ErrorHandler errorHandler) {
+        __throwIfDone();
+
         if (errorHandler == null) {
             throw new IllegalArgumentException("Error handler cannot be null");
         }
@@ -294,8 +318,16 @@ class ServletContextHandlerBuilder {
         return this;
     }
 
+    /** Use {@linkplain ServletContextHandlerBuilder#done()} instead. */
+    @Deprecated
     public ServletContainerBuilder endContext() {
-        servletContainerBuilder.contextBuilders.put(contextPath, this);
+        return done();
+    }
+
+    public ServletContainerBuilder done() {
+        __throwIfDone();
+        
+        servletContainerBuilder._contextBuilders.put(contextPath, this);
         return servletContainerBuilder;
     }
 
