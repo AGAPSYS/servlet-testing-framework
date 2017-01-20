@@ -75,7 +75,7 @@ public class ServletContainer <SC extends ServletContainer<SC>> {
         // =====================================================================
     }
 
-    public static ServletContainer newInstance(Class<? extends HttpServlet>...servlets) {
+    public static ServletContainer<?> newInstance(Class<? extends HttpServlet>...servlets) {
         return new ServletContainer(servlets);
     }
 
