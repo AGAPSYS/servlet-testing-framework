@@ -18,10 +18,9 @@ package com.agapsys.sevlet.test;
 
 import com.agapsys.http.HttpGet;
 import com.agapsys.http.HttpResponse.StringResponse;
-import com.agapsys.sevlet.container.ServletContainer;
-import com.agapsys.sevlet.container.ServletContainerBuilder;
 import com.agapsys.sevlet.test.utils.MyFilter;
 import com.agapsys.sevlet.test.utils.MyServlet;
+import com.agapsys.sevlet.test.utils.TestingContainer;
 import java.io.IOException;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
@@ -30,29 +29,30 @@ import org.junit.Test;
 
 public class MyFilterTest {
     private static final String CONTEXT = "/";
-    
-    private ServletContainer sc;
-    
-    @Before
-    public void setUp() {
-        sc = new ServletContainerBuilder()
+
+    private final TestingContainer tc;
+
+    public MyFilterTest() {
+        tc = new TestingContainer()
             .registerServlet(MyServlet.class)
-            .registerFilter(MyFilter.class)
-            .build();
-        
-        sc.startServer();
+            .registerFilter(MyFilter.class);
     }
-    
+
+    @Before
+    public void before() {
+        tc.start();
+    }
+
     @After
-    public void tearDown() {
-        sc.stopServer();
+    public void after() {
+        tc.stop();
     }
 
     @Test
     public void testFilterIntercept() throws IOException {
         String testUrl = CONTEXT + MyServlet.URL1;
-        
-        StringResponse response = sc.doRequest(new HttpGet(testUrl));
+
+        StringResponse response = tc.doRequest(new HttpGet(testUrl));
         assertEquals(response.getStatusCode(), 200);
 
         String responseStr = response.getContentString();

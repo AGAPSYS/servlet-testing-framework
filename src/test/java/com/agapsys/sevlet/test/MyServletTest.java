@@ -18,9 +18,8 @@ package com.agapsys.sevlet.test;
 
 import com.agapsys.http.HttpGet;
 import com.agapsys.http.HttpResponse.StringResponse;
-import com.agapsys.sevlet.container.ServletContainer;
-import com.agapsys.sevlet.container.ServletContainerBuilder;
 import com.agapsys.sevlet.test.utils.MyServlet;
+import com.agapsys.sevlet.test.utils.TestingContainer;
 import java.io.IOException;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
@@ -29,30 +28,30 @@ import org.junit.Test;
 
 public class MyServletTest {
     private static final String CONTEXT = "/";
-    
-    private ServletContainer sc;
-    
+
+    private TestingContainer tc;
+
     @Before
-    public void setUp() {
-        sc = ServletContainerBuilder.getServletContainer(MyServlet.class);
-        sc.startServer();
+    public void before() {
+        tc = new TestingContainer(MyServlet.class);
+        tc.start();
     }
-    
+
     @After
-    public void tearDown() {
-        sc.stopServer();
+    public void after() {
+        tc.stop();
     }
 
     @Test
     public void testServletResponse() throws IOException {
         String testUrl = CONTEXT + MyServlet.URL1;
-        
-        StringResponse response = sc.doRequest(new HttpGet(testUrl));
+
+        StringResponse response = tc.doRequest(new HttpGet(testUrl));
         assertEquals(response.getStatusCode(), 200);
 
         String responseStr = response.getContentString();
 
         assertEquals(responseStr, MyServlet.URL1);
-        
+
     }
 }

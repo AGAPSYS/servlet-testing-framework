@@ -18,49 +18,47 @@ package com.agapsys.sevlet.test;
 
 import com.agapsys.http.HttpGet;
 import com.agapsys.http.HttpResponse.StringResponse;
-import com.agapsys.sevlet.container.ServletContainer;
-import com.agapsys.sevlet.container.ServletContainerBuilder;
 import com.agapsys.sevlet.container.StacktraceErrorHandler;
 import com.agapsys.sevlet.test.utils.ErrorPage;
 import com.agapsys.sevlet.test.utils.ExceptionServlet;
+import com.agapsys.sevlet.test.utils.TestingContainer;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class ErrorHandlerTest {
-    private ServletContainer sc;
-    
+
+    private TestingContainer tc;
+
     @After
     public void after() {
-        sc.stopServer();
-        sc = null;
+        if (tc != null)
+            tc.stop();
     }
-    
+
     @Test
     public void testErrorPage() {
-        sc = new ServletContainerBuilder()
+        tc = new TestingContainer()
             .registerServlet(ExceptionServlet.class)
             .registerServlet(ErrorPage.class)
-            .registerErrorPage(500, ErrorPage.URL)
-            .build();
-        
-        sc.startServer();
-                
-        StringResponse resp = sc.doRequest(new HttpGet(ExceptionServlet.URL));
+            .registerErrorPage(Throwable.class, ErrorPage.URL);
+
+        tc.start();
+
+        StringResponse resp = tc.doRequest(new HttpGet(ExceptionServlet.URL));
         assertEquals(ErrorPage.RESPONSE_MESSAGE, resp.getContentString());
     }
-    
+
     @Test
     public void testErrorHandler() {
-        sc = new ServletContainerBuilder()
+        tc = new TestingContainer()
             .registerServlet(ExceptionServlet.class)
-            .setErrorHandler(new StacktraceErrorHandler())
-            .build();
-        
-        sc.startServer();
-                
-        StringResponse resp = sc.doRequest(new HttpGet(ExceptionServlet.URL));
+            .setErrorHandler(new StacktraceErrorHandler());
+
+        tc.start();
+
+        StringResponse resp = tc.doRequest(new HttpGet(ExceptionServlet.URL));
         String content = resp.getContentString();
         assertTrue(content.startsWith("java.lang.RuntimeException"));
     }

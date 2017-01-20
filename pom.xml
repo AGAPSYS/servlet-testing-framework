@@ -68,17 +68,18 @@ limitations under the License.
             <version>4.10</version>
             <scope>test</scope>
         </dependency>
+		<dependency>
+			<groupId>com.agapsys</groupId>
+			<artifactId>simple-http-client</artifactId>
+			<version>0.1.0</version>
+			<scope>test</scope>
+		</dependency>
 
         <!-- Compile dependencies -->
         <dependency>
             <groupId>org.eclipse.jetty.aggregate</groupId>
             <artifactId>jetty-all</artifactId>
-            <version>9.2.14.v20151106</version>
-        </dependency>
-        <dependency>
-            <groupId>com.agapsys</groupId>
-            <artifactId>simple-http-client</artifactId>
-            <version>0.1.0</version>
+            <version>9.2.20.v20161216</version>
         </dependency>
     </dependencies>
 </project>
