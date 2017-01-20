@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.agapsys.sevlet.test;
+package com.agapsys.jee;
 
 import com.agapsys.http.HttpGet;
 import com.agapsys.http.HttpResponse.StringResponse;
-import com.agapsys.sevlet.test.utils.MyFilter;
-import com.agapsys.sevlet.test.utils.MyServlet;
-import com.agapsys.sevlet.test.utils.TestingContainer;
+import com.agapsys.jee.app.MyFilter;
+import com.agapsys.jee.app.MyServlet;
 import java.io.IOException;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;

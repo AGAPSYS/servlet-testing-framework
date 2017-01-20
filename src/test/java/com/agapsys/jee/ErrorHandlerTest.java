@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package com.agapsys.sevlet.test;
+package com.agapsys.jee;
 
 import com.agapsys.http.HttpGet;
 import com.agapsys.http.HttpResponse.StringResponse;
-import com.agapsys.sevlet.container.StacktraceErrorHandler;
-import com.agapsys.sevlet.test.utils.ErrorPage;
-import com.agapsys.sevlet.test.utils.ExceptionServlet;
-import com.agapsys.sevlet.test.utils.TestingContainer;
+import com.agapsys.jee.app.ErrorPage;
+import com.agapsys.jee.app.ExceptionServlet;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

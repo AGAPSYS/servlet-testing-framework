@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package com.agapsys.sevlet.test.utils;
+package com.agapsys.jee.app;
 
 import java.io.IOException;
-import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebFilter;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebFilter(urlPatterns = {MyServlet.URL1, MyServlet.URL2})
-public class MyFilter extends SimpleHttpFilter {
+@WebServlet(ExceptionServlet.URL)
+public class ExceptionServlet extends HttpServlet {
+    public static final String URL = "/exception";
 
     @Override
-    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        response.getWriter().print("Filtered");
-        filterChain.doFilter(request, response);
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        throw new RuntimeException();
     }
 }

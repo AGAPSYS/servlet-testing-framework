@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.agapsys.sevlet.test.utils;
+package com.agapsys.jee.app;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -23,12 +23,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(ExceptionServlet.URL)
-public class ExceptionServlet extends HttpServlet {
-    public static final String URL = "/exception";
+@WebServlet(ErrorPage.URL)
+public class ErrorPage extends HttpServlet {
+    public static final String URL = "/error";
+    public static final String RESPONSE_MESSAGE = "Error captured";
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        throw new RuntimeException();
+        resp.getWriter().print(RESPONSE_MESSAGE);
     }
 }

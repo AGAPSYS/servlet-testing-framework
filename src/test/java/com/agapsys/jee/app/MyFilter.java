@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package com.agapsys.sevlet.test.utils;
+package com.agapsys.jee.app;
 
 import java.io.IOException;
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(ErrorPage.URL)
-public class ErrorPage extends HttpServlet {
-    public static final String URL = "/error";
-    public static final String RESPONSE_MESSAGE = "Error captured";
+@WebFilter(urlPatterns = {MyServlet.URL1, MyServlet.URL2})
+public class MyFilter extends SimpleHttpFilter {
 
     @Override
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().print(RESPONSE_MESSAGE);
+    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        response.getWriter().print("Filtered");
+        filterChain.doFilter(request, response);
     }
 }

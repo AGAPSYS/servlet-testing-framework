@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.agapsys.sevlet.test.utils;
+package com.agapsys.jee;
 
 import com.agapsys.http.HttpClient;
 import com.agapsys.http.HttpRequest;
 import com.agapsys.http.HttpResponse;
 import com.agapsys.http.HttpResponse.StringResponse;
-import com.agapsys.sevlet.container.ServletContainer;
 import java.io.IOException;
 import javax.servlet.http.HttpServlet;
 import org.eclipse.jetty.server.Connector;
