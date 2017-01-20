@@ -39,7 +39,7 @@ import org.eclipse.jetty.util.log.StdErrLog;
 /**
  * Represents a servlet container
  */
-public class ServletContainer <SC extends ServletContainer> {
+public class ServletContainer <SC extends ServletContainer<SC>> {
 
     // <editor-fold desc="STATIC SCOPE" defaultstate="collapsed">
     // =========================================================================
@@ -73,6 +73,10 @@ public class ServletContainer <SC extends ServletContainer> {
         @Override public void ignore(Throwable ignored) { }
         @Override public void debug(String arg0, long arg1) { }
         // =====================================================================
+    }
+
+    public static ServletContainer newInstance(Class<? extends HttpServlet>...servlets) {
+        return new ServletContainer(servlets);
     }
 
     static {
@@ -185,7 +189,7 @@ public class ServletContainer <SC extends ServletContainer> {
     // <editor-fold desc="Public scope">
     // -------------------------------------------------------------------------
 
-    public ServletContainer(Class<? extends HttpServlet>...servlets) {
+    protected ServletContainer(Class<? extends HttpServlet>...servlets) {
         for (Class<? extends HttpServlet> servletClass : servlets) {
             registerServlet(servletClass);
         }

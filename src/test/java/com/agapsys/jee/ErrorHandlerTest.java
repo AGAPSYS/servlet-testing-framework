@@ -37,7 +37,7 @@ public class ErrorHandlerTest {
 
     @Test
     public void testErrorPage() {
-        tc = new TestingContainer()
+        tc = TestingContainer.newInstance()
             .registerServlet(ExceptionServlet.class)
             .registerServlet(ErrorPage.class)
             .registerErrorPage(Throwable.class, ErrorPage.URL);
@@ -50,7 +50,7 @@ public class ErrorHandlerTest {
 
     @Test
     public void testErrorHandler() {
-        tc = new TestingContainer()
+        tc = TestingContainer.newInstance()
             .registerServlet(ExceptionServlet.class)
             .setErrorHandler(new StacktraceErrorHandler());
 

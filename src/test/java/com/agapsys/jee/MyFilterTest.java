@@ -32,7 +32,7 @@ public class MyFilterTest {
     private final TestingContainer tc;
 
     public MyFilterTest() {
-        tc = new TestingContainer()
+        tc = TestingContainer.newInstance()
             .registerServlet(MyServlet.class)
             .registerFilter(MyFilter.class);
     }
