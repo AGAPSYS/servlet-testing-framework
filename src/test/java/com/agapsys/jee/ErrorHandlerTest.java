@@ -37,7 +37,7 @@ public class ErrorHandlerTest {
 
     @Test
     public void testErrorPage() {
-        tc = TestingContainer.newInstance()
+        tc = new TestingContainer<>()
             .registerServlet(ExceptionServlet.class)
             .registerServlet(ErrorPage.class)
             .registerErrorPage(Throwable.class, ErrorPage.URL);

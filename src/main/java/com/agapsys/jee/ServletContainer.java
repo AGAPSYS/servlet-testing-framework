@@ -189,7 +189,7 @@ public class ServletContainer <SC extends ServletContainer<SC>> {
     // <editor-fold desc="Public scope">
     // -------------------------------------------------------------------------
 
-    protected ServletContainer(Class<? extends HttpServlet>...servlets) {
+    public ServletContainer(Class<? extends HttpServlet>...servlets) {
         for (Class<? extends HttpServlet> servletClass : servlets) {
             registerServlet(servletClass);
         }

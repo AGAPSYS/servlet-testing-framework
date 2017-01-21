@@ -35,7 +35,7 @@ public class TestingContainer<TC extends TestingContainer<TC>> extends ServletCo
         return new TestingContainer(servlets);
     }
 
-    protected TestingContainer(Class<? extends HttpServlet>...servlets) {
+    public TestingContainer(Class<? extends HttpServlet>...servlets) {
         super(servlets);
     }
 
