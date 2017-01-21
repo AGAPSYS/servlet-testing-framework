@@ -32,7 +32,7 @@ public class MyServletTest {
 
     @Before
     public void before() {
-        tc = new TestingContainer(MyServlet.class);
+        tc = TestingContainer.newInstance(MyServlet.class);
         tc.start();
     }
 

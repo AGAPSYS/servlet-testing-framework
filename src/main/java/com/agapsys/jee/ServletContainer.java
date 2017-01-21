@@ -76,7 +76,13 @@ public class ServletContainer <SC extends ServletContainer<SC>> {
     }
 
     public static ServletContainer<?> newInstance(Class<? extends HttpServlet>...servlets) {
-        return new ServletContainer(servlets);
+        ServletContainer sc = new ServletContainer<>();
+
+        for (Class<? extends HttpServlet> servlet : servlets) {
+            sc.registerServlet(servlet);
+        }
+
+        return sc;
     }
 
     static {
@@ -188,13 +194,6 @@ public class ServletContainer <SC extends ServletContainer<SC>> {
 
     // <editor-fold desc="Public scope">
     // -------------------------------------------------------------------------
-
-    public ServletContainer(Class<? extends HttpServlet>...servlets) {
-        for (Class<? extends HttpServlet> servletClass : servlets) {
-            registerServlet(servletClass);
-        }
-    }
-
     /**
      * Returns a boolean indicating if this instance was initialized.
      *
@@ -325,7 +324,6 @@ public class ServletContainer <SC extends ServletContainer<SC>> {
         return (SC) this;
     }
 
-
     /**
      * Registers a servlet.
      *
@@ -350,6 +348,7 @@ public class ServletContainer <SC extends ServletContainer<SC>> {
      * @return this.
      */
     public final SC registerServlet(Class<? extends HttpServlet> servletClass) {
+
         WebServlet webServlet = servletClass.getAnnotation(WebServlet.class);
 
         if (webServlet == null)
