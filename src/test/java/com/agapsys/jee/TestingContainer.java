@@ -25,10 +25,6 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 
-/**
- *
- * @author Leandro Oliveira (leandro@agapsys.com)
- */
 public class TestingContainer<TC extends TestingContainer<TC>> extends ServletContainer<TC> {
 
     public static TestingContainer<?> newInstance(Class<? extends HttpServlet>...servlets) {
