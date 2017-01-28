@@ -19,6 +19,8 @@ import java.util.EnumSet;
 import java.util.EventListener;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.servlet.DispatcherType;
@@ -98,7 +100,7 @@ public class ServletContainer <SC extends ServletContainer<SC>> {
     // =========================================================================
     // </editor-fold>
 
-    private final Map<String, Class<? extends Filter>>         filterMap                 = new LinkedHashMap<>();
+    private final Map<String, List<Class<? extends Filter>>>   filterMap                 = new LinkedHashMap<>();
     private final Map<String, Class<? extends HttpServlet>>    servletMap                = new LinkedHashMap<>();
     private final Set<Class<? extends ServletContextListener>> servletContextListenerSet = new LinkedHashSet<>();
 
@@ -124,8 +126,10 @@ public class ServletContainer <SC extends ServletContainer<SC>> {
         handler.setResourceBase(System.getProperty("java.io.tmpdir"));
 
         // Filters...
-        for (Map.Entry<String, Class<? extends Filter>> filterEntry : filterMap.entrySet()) {
-            handler.addFilter(filterEntry.getValue(), filterEntry.getKey(), EnumSet.of(DispatcherType.REQUEST));
+        for (Map.Entry<String, List<Class<? extends Filter>>> filterEntry : filterMap.entrySet()) {
+            for (Class<? extends Filter> filterClass : filterEntry.getValue()) {
+                handler.addFilter(filterClass, filterEntry.getKey(), EnumSet.of(DispatcherType.REQUEST));
+            }
         }
 
         // Servlets...
@@ -289,10 +293,16 @@ public class ServletContainer <SC extends ServletContainer<SC>> {
     public SC registerFilter(Class<? extends Filter> filterClass, String urlPattern) {
         __throwIfInitialized();
 
-        if (filterMap.containsKey(urlPattern) && filterMap.get(urlPattern) != filterClass)
-            throw new IllegalStateException(String.format("URL pattern is already associated with another filter class: %s => %s", urlPattern, filterMap.get(urlPattern)));
+        List<Class<? extends Filter>> filterList = filterMap.get(urlPattern);
 
-        filterMap.put(urlPattern, filterClass);
+        if (filterList == null) {
+            filterList = new LinkedList<>();
+            filterMap.put(urlPattern, filterList);
+        }
+
+        if (!filterList.contains(filterClass)) {
+            filterList.add(filterClass);
+        }
 
         return (SC) this;
     }
