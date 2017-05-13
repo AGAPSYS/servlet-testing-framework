@@ -1,6 +1,6 @@
 <!--
 
- Copyright 2015 Agapsys Tecnologia Ltda-ME.
+ Copyright 2015-2017 Agapsys Tecnologia Ltda-ME.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ limitations under the License.
 
     <groupId>com.agapsys</groupId>
     <artifactId>embedded-servlet-container</artifactId>
-    <version>0.1.0-20170322</version>
+    <version>0.1.0-20170513</version>
     <packaging>jar</packaging>
 
     <properties>
