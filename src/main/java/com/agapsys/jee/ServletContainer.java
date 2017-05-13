@@ -45,8 +45,8 @@ public class ServletContainer <SC extends ServletContainer<SC>> {
 
     // <editor-fold desc="STATIC SCOPE" defaultstate="collapsed">
     // =========================================================================
-    public static final String ROOT_PATH = "/";
-
+    public static final String ROOT_PATH         = "/";
+    public static final int    DEFAULT_HTTP_PORT = 8080;
     private static class NoLogger implements Logger {
         private static NoLogger singletonInstance = null;
 
@@ -190,7 +190,7 @@ public class ServletContainer <SC extends ServletContainer<SC>> {
      */
     protected Connector[] getConnectors(Server server) {
         ServerConnector http = new ServerConnector(server);
-        http.setPort(8080);
+        http.setPort(DEFAULT_HTTP_PORT);
         return new Connector[] { http };
     }
     // -------------------------------------------------------------------------
